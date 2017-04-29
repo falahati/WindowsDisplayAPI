@@ -7,7 +7,7 @@
         <authors>Soroush Falahati</authors>
         <licenseUrl>https://github.com/falahati/WindowsDisplayAPI/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/falahati/WindowsDisplayAPI</projectUrl>
-        <iconUrl>https://github.com/falahati/WindowsDisplayAPI/blob/master/Icon.png?raw=true</iconUrl>
+        <iconUrl>https://github.com/falahati/WindowsDisplayAPI/blob/master/WindowsDisplayAPI/Icon.png?raw=true</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
         <language>en-US</language>
