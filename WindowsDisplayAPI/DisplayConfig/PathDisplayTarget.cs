@@ -8,6 +8,7 @@ using WindowsDisplayAPI.Native;
 using WindowsDisplayAPI.Native.DisplayConfig;
 using WindowsDisplayAPI.Native.DisplayConfig.Structures;
 using WindowsDisplayAPI.Native.Structures;
+using Microsoft.Win32;
 
 namespace WindowsDisplayAPI.DisplayConfig
 {
@@ -340,6 +341,29 @@ namespace WindowsDisplayAPI.DisplayConfig
         public override string ToString()
         {
             return FriendlyName;
+        }
+
+        /// <summary>
+        ///     Opens the registry key of the Windows PnP manager for this display target
+        /// </summary>
+        /// <returns>A RegistryKey instance for successful call, otherwise null</returns>
+        public RegistryKey OpenDevicePnPKey()
+        {
+            if (string.IsNullOrWhiteSpace(DevicePath))
+                return null;
+            var path = DevicePath;
+            if (path.StartsWith("\\\\?\\"))
+            {
+                path = path.Substring(4).Replace("#", "\\");
+                if (path.EndsWith("}"))
+                {
+                    var guidIndex = path.LastIndexOf("{", StringComparison.InvariantCulture);
+                    if (guidIndex > 0)
+                        path = path.Substring(0, guidIndex);
+                }
+            }
+            return Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum\\" + path,
+                RegistryKeyPermissionCheck.ReadSubTree);
         }
 
         /// <summary>

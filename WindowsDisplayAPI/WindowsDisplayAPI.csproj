@@ -48,6 +48,7 @@
     <Compile Include="DisplayDevice.cs" />
     <Compile Include="DisplayPossibleSetting.cs" />
     <Compile Include="Exceptions\DuplicateModeException.cs" />
+    <Compile Include="Exceptions\InvalidRegistryAddressException.cs" />
     <Compile Include="Exceptions\NotACloneMemberException.cs" />
     <Compile Include="Exceptions\PathChangeException.cs" />
     <Compile Include="Exceptions\InvalidEDIDInformation.cs" />
@@ -112,7 +113,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnAttachedDisplay.cs" />
     <Compile Include="DisplaySetting.cs" />
-  </ItemGroup>  
+  </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />
     <None Include="readme.txt" />
