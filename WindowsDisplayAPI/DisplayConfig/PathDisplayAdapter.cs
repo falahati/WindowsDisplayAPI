@@ -14,7 +14,11 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// </summary>
     public class PathDisplayAdapter : IEquatable<PathDisplayAdapter>
     {
-        internal PathDisplayAdapter(LUID adapterId)
+        /// <summary>
+        /// Creates a new PathDisplayAdapter
+        /// </summary>
+        /// <param name="adapterId">The adapter localally unique identification</param>
+        public PathDisplayAdapter(LUID adapterId)
         {
             AdapterId = adapterId;
         }
