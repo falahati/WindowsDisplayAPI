@@ -34,7 +34,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <param name="isVirtualModeSupported">A boolean value indicating the target virtual mode support</param>
         public PathTargetInfo(
             PathDisplayTarget displayTarget,
-            uint frequencyInMillihertz,
+            ulong frequencyInMillihertz,
             DisplayConfigScanLineOrdering scanLineOrdering = DisplayConfigScanLineOrdering.NotSpecified,
             DisplayConfigRotation rotation = DisplayConfigRotation.NotSpecified,
             DisplayConfigScaling scaling = DisplayConfigScaling.Preferred,
@@ -60,7 +60,7 @@ namespace WindowsDisplayAPI.DisplayConfig
             this(displayTarget, isVirtualModeSupported)
         {
             _signalInfo = signalInfo;
-            FrequencyInMillihertz = (uint) signalInfo.VerticalSyncFrequencyInMillihertz;
+            FrequencyInMillihertz = signalInfo.VerticalSyncFrequencyInMillihertz;
             ScanLineOrdering = signalInfo.ScanLineOrdering;
             IsSignalInformationAvailable = true;
         }
@@ -83,7 +83,7 @@ namespace WindowsDisplayAPI.DisplayConfig
             )
         {
             _signalInfo = signalInfo;
-            FrequencyInMillihertz = (uint) signalInfo.VerticalSyncFrequencyInMillihertz;
+            FrequencyInMillihertz = signalInfo.VerticalSyncFrequencyInMillihertz;
             ScanLineOrdering = signalInfo.ScanLineOrdering;
             IsSignalInformationAvailable = true;
         }
