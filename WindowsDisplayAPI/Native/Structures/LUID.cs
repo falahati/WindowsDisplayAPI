@@ -19,6 +19,17 @@ namespace WindowsDisplayAPI.Native.Structures
         /// </summary>
         public readonly int HighPart;
 
+        /// <summary>
+        ///     Creates a new LUID
+        /// </summary>
+        /// <param name="lowPart">32Bit unsigned integer, low</param>
+        /// <param name="highPart">32Bit signed integer, high</param>
+        public LUID(uint lowPart, int highPart)
+        {
+            LowPart = lowPart;
+            HighPart = highPart;
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {
