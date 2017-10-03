@@ -15,7 +15,7 @@ namespace WindowsDisplayAPI
         /// <param name="device">The DisplayDevice instance to copy information from</param>
         protected UnAttachedDisplay(DisplayDevice device)
             : base(device.DevicePath, device.DeviceName, device.DeviceKey, device.Adapter,
-                device.DisplayFullName, device.DisplayName, device.IsAvailable, false)
+                device.DisplayName, device.DisplayFullName, device.IsAvailable, false)
         {
         }
 
