@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using WindowsDisplayAPI.Exceptions;
 using WindowsDisplayAPI.Native;
 using WindowsDisplayAPI.Native.DeviceContext;
@@ -190,7 +189,7 @@ namespace WindowsDisplayAPI
                     var displaySetting in
                     currentDisplaySettings.Where(pair => pair.Key is Display)
                         .Select(pair => pair.Key as Display)
-                        .Where(display => display.IsValid))
+                        .Where(display => display?.IsValid == true))
                     displaySetting.Disable(false);
 
                 if (applyNow)

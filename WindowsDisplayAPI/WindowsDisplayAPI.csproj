@@ -1,133 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{224C9D59-EAFA-445B-8A0C-E443ECBF4064}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindowsDisplayAPI</RootNamespace>
-    <AssemblyName>WindowsDisplayAPI</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <Version>1.1.0.1</Version>
+    <Company>falahati.net</Company>
+    <Description>WindowsDisplayAPI is a .Net wrapper for Windows Display and Windows CCD APIs</Description>
+    <Authors>Soroush Falahati</Authors>
+    <Copyright>Copyright © Soroush Falahati 2018 (falahati.net)</Copyright>
+    <Platforms>AnyCPU</Platforms>
+    <Product>WindowsDisplayAPI</Product>
+    <PackageProjectUrl>https://github.com/falahati/WindowsDisplayAPI</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/falahati/WindowsDisplayAPI/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://github.com/falahati/WindowsDisplayAPI/blob/master/WindowsDisplayAPI/Icon.png?raw=true</PackageIconUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Title>Windows Display API Wrapper (CCD)</Title>
+    <PackageId>WindowsDisplayAPI</PackageId>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\WindowsDisplayAPI.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <BumpLabel>dev</BumpLabel>
+    <BumpLabelDigits>4</BumpLabelDigits>
+    <OutputPath>..\Debug</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\WindowsDisplayAPI.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <BumpRevision>True</BumpRevision>
+    <BumpResetLabel>dev</BumpResetLabel>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <OutputPath>..\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
+    <PackageReference PrivateAssets="all" Include="MSBump" Version="2.3.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="Icon.png">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Device.cs" />
-    <Compile Include="Display.cs" />
-    <Compile Include="DisplayAdapter.cs" />
-    <Compile Include="DisplayConfig\PathDisplaySource.cs" />
-    <Compile Include="DisplayConfig\PathDisplayTarget.cs" />
-    <Compile Include="DisplayConfig\PathTargetDesktopImage.cs" />
-    <Compile Include="DisplayDevice.cs" />
-    <Compile Include="DisplayPossibleSetting.cs" />
-    <Compile Include="Exceptions\DuplicateModeException.cs" />
-    <Compile Include="Exceptions\InvalidRegistryAddressException.cs" />
-    <Compile Include="Exceptions\NotACloneMemberException.cs" />
-    <Compile Include="Exceptions\PathChangeException.cs" />
-    <Compile Include="Exceptions\InvalidEDIDInformation.cs" />
-    <Compile Include="Exceptions\InvalidDisplayException.cs" />
-    <Compile Include="Exceptions\MissingDisplayException.cs" />
-    <Compile Include="Exceptions\TargetNotAvailableException.cs" />
-    <Compile Include="Exceptions\MissingModeException.cs" />
-    <Compile Include="Exceptions\ModeChangeException.cs" />
-    <Compile Include="Native\DeviceContextApi.cs" />
-    <Compile Include="Native\DeviceContext\ChangeDisplaySettingsExResults.cs" />
-    <Compile Include="Native\DeviceContext\ChangeDisplaySettingsFlags.cs" />
-    <Compile Include="Native\DisplayConfigApi.cs" />
-    <Compile Include="Native\DeviceContext\DeviceModeFields.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigDeviceInfoType.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigModeInfoType.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigPathInfoFlags.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigPathTargetInfoFlags.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigPathSourceInfoFlags.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigPixelFormat.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigScanLineOrdering.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigRotation.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigScaling.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigTargetDeviceNameFlags.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigTopologyId.cs" />
-    <Compile Include="Native\DisplayConfig\DisplayConfigVideoOutputTechnology.cs" />
-    <Compile Include="Native\DeviceContext\DisplayDeviceStateFlags.cs" />
-    <Compile Include="Native\DeviceContext\DisplayFixedOutput.cs" />
-    <Compile Include="Native\DeviceContext\DisplayFlags.cs" />
-    <Compile Include="Native\DeviceContext\DisplayOrientation.cs" />
-    <Compile Include="Native\DeviceContext\DisplaySettingsMode.cs" />
-    <Compile Include="Native\DisplayConfig\QueryDeviceConfigFlags.cs" />
-    <Compile Include="Native\DisplayConfig\SetDisplayConfigFlags.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigAdapterName.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigDesktopImageInfo.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigSetTargetPersistence.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigSupportVirtualResolution.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigTargetBaseType.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigTargetPreferredMode.cs" />
-    <Compile Include="Native\Structures\RectangleL.cs" />
-    <Compile Include="Native\DeviceContext\Structures\DeviceMode.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigDeviceInfoHeader.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigModeInfo.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigPathInfo.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigPathSourceInfo.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigPathTargetInfo.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigRational.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigSourceDeviceName.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigTargetDeviceName.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigSourceMode.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigTargetMode.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfig2DRegion.cs" />
-    <Compile Include="Native\DisplayConfig\Structures\DisplayConfigVideoSignalInfo.cs" />
-    <Compile Include="Native\DeviceContext\Structures\DisplayDevice.cs" />
-    <Compile Include="Native\Structures\LUID.cs" />
-    <Compile Include="Native\Structures\PointL.cs" />
-    <Compile Include="Native\DisplayConfig\VideoSignalStandard.cs" />
-    <Compile Include="Native\Win32Status.cs" />
-    <Compile Include="DisplayConfig\PathDisplayAdapter.cs" />
-    <Compile Include="DisplayConfig\PathInfo.cs" />
-    <Compile Include="DisplayConfig\PathTargetInfo.cs" />
-    <Compile Include="DisplayConfig\PathTargetSignalInfo.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnAttachedDisplay.cs" />
-    <Compile Include="DisplaySetting.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icon.png" />
-    <None Include="readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="WindowsDisplayAPI.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="../NuGet.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using System.Windows.Forms;
 using WindowsDisplayAPI.Native.DeviceContext;
 using WindowsDisplayAPI.Native.DeviceContext.Structures;
 

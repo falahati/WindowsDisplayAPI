@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
 using WindowsDisplayAPI.Exceptions;
 
 namespace WindowsDisplayAPI
@@ -117,17 +116,18 @@ namespace WindowsDisplayAPI
             SetSettings(new DisplaySetting(), apply);
         }
 
+#if !NETSTANDARD
         /// <summary>
         ///     Returns the corresponding Screen instance for this display device
         /// </summary>
         /// <returns>A Screen object</returns>
-        public Screen GetScreen()
+        public System.Windows.Forms.Screen GetScreen()
         {
             if (!IsValid)
                 throw new InvalidDisplayException(DevicePath);
             try
             {
-                return Screen.AllScreens.FirstOrDefault(screen => screen.DeviceName.Equals(DisplayName));
+                return System.Windows.Forms.Screen.AllScreens.FirstOrDefault(screen => screen.DeviceName.Equals(DisplayName));
             }
             catch
             {
@@ -135,6 +135,7 @@ namespace WindowsDisplayAPI
             }
             return null;
         }
+#endif
 
         /// <summary>
         ///     Changes the display device settings to a new DisplaySettings object

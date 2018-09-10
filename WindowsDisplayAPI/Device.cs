@@ -1,8 +1,4 @@
-﻿using System;
-using WindowsDisplayAPI.Exceptions;
-using Microsoft.Win32;
-
-namespace WindowsDisplayAPI
+﻿namespace WindowsDisplayAPI
 {
     /// <summary>
     ///     Represents a Windows Video Device including Display Devices and Video Controllers
@@ -43,31 +39,32 @@ namespace WindowsDisplayAPI
             return $"{GetType().Name}: {DeviceName}";
         }
 
+#if !NETSTANDARD
         /// <summary>
         ///     Opens the registry key at the address specified by the DeviceKey property
         /// </summary>
         /// <returns>A RegistryKey instance for successful call, otherwise null</returns>
-        /// <exception cref="InvalidRegistryAddressException">Registry address is invalid or unknown.</exception>
-        public RegistryKey OpenDeviceKey()
+        /// <exception cref="WindowsDisplayAPI.Exceptions.InvalidRegistryAddressException">Registry address is invalid or unknown.</exception>
+        public Microsoft.Win32.RegistryKey OpenDeviceKey()
         {
             if (string.IsNullOrWhiteSpace(DeviceKey))
                 return null;
             const string machineRootName = "\\Registry\\Machine\\";
-            const string userRootName = "\\Registry\\Machine\\";
-            if (DeviceKey.StartsWith(machineRootName, StringComparison.InvariantCultureIgnoreCase))
-                return Registry.LocalMachine.OpenSubKey(DeviceKey.Substring(machineRootName.Length),
-                    RegistryKeyPermissionCheck.ReadSubTree);
-            if (DeviceKey.StartsWith(userRootName, StringComparison.InvariantCultureIgnoreCase))
-                return Registry.Users.OpenSubKey(DeviceKey.Substring(machineRootName.Length),
-                    RegistryKeyPermissionCheck.ReadSubTree);
-            throw new InvalidRegistryAddressException("Registry address is invalid or unknown.");
+            const string userRootName = "\\Registry\\Current\\";
+            if (DeviceKey.StartsWith(machineRootName, System.StringComparison.InvariantCultureIgnoreCase))
+                return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(DeviceKey.Substring(machineRootName.Length),
+                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
+            if (DeviceKey.StartsWith(userRootName, System.StringComparison.InvariantCultureIgnoreCase))
+                return Microsoft.Win32.Registry.Users.OpenSubKey(DeviceKey.Substring(userRootName.Length),
+                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
+            throw new Exceptions.InvalidRegistryAddressException("Registry address is invalid or unknown.");
         }
 
         /// <summary>
         ///     Opens the registry key of the Windows PnP manager for this device
         /// </summary>
         /// <returns>A RegistryKey instance for successful call, otherwise null</returns>
-        public RegistryKey OpenDevicePnPKey()
+        public Microsoft.Win32.RegistryKey OpenDevicePnPKey()
         {
             if (string.IsNullOrWhiteSpace(DevicePath))
                 return null;
@@ -77,13 +74,14 @@ namespace WindowsDisplayAPI
                 path = path.Substring(4).Replace("#", "\\");
                 if (path.EndsWith("}"))
                 {
-                    var guidIndex = path.LastIndexOf("{", StringComparison.InvariantCulture);
+                    var guidIndex = path.LastIndexOf("{", System.StringComparison.InvariantCulture);
                     if (guidIndex > 0)
                         path = path.Substring(0, guidIndex);
                 }
             }
-            return Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum\\" + path,
-                RegistryKeyPermissionCheck.ReadSubTree);
+            return Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum\\" + path,
+                Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
         }
+#endif
     }
 }
