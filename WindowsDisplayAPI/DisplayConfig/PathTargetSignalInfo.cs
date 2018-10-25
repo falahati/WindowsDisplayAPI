@@ -121,10 +121,10 @@ namespace WindowsDisplayAPI.DisplayConfig
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return ActiveSize.Equals(other.ActiveSize) &&
+            return ActiveSize==other.ActiveSize &&
                    (HorizontalSyncFrequencyInMillihertz == other.HorizontalSyncFrequencyInMillihertz) &&
                    (PixelRate == other.PixelRate) && (ScanLineOrdering == other.ScanLineOrdering) &&
-                   TotalSize.Equals(other.TotalSize) &&
+                   TotalSize == other.TotalSize &&
                    (VerticalSyncFrequencyDivider == other.VerticalSyncFrequencyDivider) &&
                    (VerticalSyncFrequencyInMillihertz == other.VerticalSyncFrequencyInMillihertz) &&
                    (VideoStandard == other.VideoStandard);
@@ -138,7 +138,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>true if both instaces are equal, otherwise false</returns>
         public static bool operator ==(PathTargetSignalInfo left, PathTargetSignalInfo right)
         {
-            return Equals(left, right);
+            return Equals(left, right) || left?.Equals(right) == true;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>true if both instaces are not equal, otherwise false</returns>
         public static bool operator !=(PathTargetSignalInfo left, PathTargetSignalInfo right)
         {
-            return !Equals(left, right);
+            return !(left == right);
         }
 
         /// <inheritdoc />

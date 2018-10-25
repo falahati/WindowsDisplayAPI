@@ -23,7 +23,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfigTargetMode && Equals((DisplayConfigTargetMode) obj);
+            return obj is DisplayConfigTargetMode mode && Equals(mode);
         }
 
         public override int GetHashCode()
@@ -33,12 +33,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfigTargetMode left, DisplayConfigTargetMode right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfigTargetMode left, DisplayConfigTargetMode right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

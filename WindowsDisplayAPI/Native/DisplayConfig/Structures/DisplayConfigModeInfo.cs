@@ -44,7 +44,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigModeInfo other)
         {
-            return (InfoType == other.InfoType) && (Id == other.Id) && AdapterId.Equals(other.AdapterId) &&
+            return (InfoType == other.InfoType) && (Id == other.Id) && AdapterId == other.AdapterId &&
                    (((InfoType == DisplayConfigModeInfoType.Source) && (SourceMode == other.SourceMode)) ||
                     ((InfoType == DisplayConfigModeInfoType.Target) && (TargetMode == other.TargetMode)) ||
                     ((InfoType == DisplayConfigModeInfoType.DesktopImage) &&
@@ -54,7 +54,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfigModeInfo && Equals((DisplayConfigModeInfo) obj);
+            return obj is DisplayConfigModeInfo info && Equals(info);
         }
 
         public override int GetHashCode()
@@ -82,12 +82,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfigModeInfo left, DisplayConfigModeInfo right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfigModeInfo left, DisplayConfigModeInfo right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

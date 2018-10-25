@@ -46,7 +46,7 @@ namespace WindowsDisplayAPI.Native.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is PointL && Equals((PointL) obj);
+            return obj is PointL point && Equals(point);
         }
 
         public override int GetHashCode()
@@ -59,12 +59,12 @@ namespace WindowsDisplayAPI.Native.Structures
 
         public static bool operator ==(PointL left, PointL right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right) == true;
         }
 
         public static bool operator !=(PointL left, PointL right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

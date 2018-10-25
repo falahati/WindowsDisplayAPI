@@ -275,7 +275,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Adapter, other.Adapter) && (TargetId == other.TargetId);
+            return Adapter == other.Adapter && TargetId == other.TargetId;
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>true if both instaces are equal, otherwise false</returns>
         public static bool operator ==(PathDisplayTarget left, PathDisplayTarget right)
         {
-            return Equals(left, right);
+            return Equals(left, right) || left?.Equals(right) == true;
         }
 
         /// <summary>
@@ -315,7 +315,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>true if both instaces are not equal, otherwise false</returns>
         public static bool operator !=(PathDisplayTarget left, PathDisplayTarget right)
         {
-            return !Equals(left, right);
+            return !(left == right);
         }
 
         /// <inheritdoc />

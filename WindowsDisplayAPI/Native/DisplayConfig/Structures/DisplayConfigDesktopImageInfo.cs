@@ -30,7 +30,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfigDesktopImageInfo && Equals((DisplayConfigDesktopImageInfo) obj);
+            return obj is DisplayConfigDesktopImageInfo info && Equals(info);
         }
 
         public override int GetHashCode()
@@ -46,12 +46,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfigDesktopImageInfo left, DisplayConfigDesktopImageInfo right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfigDesktopImageInfo left, DisplayConfigDesktopImageInfo right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

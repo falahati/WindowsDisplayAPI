@@ -44,13 +44,21 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigRational other)
         {
-            return Numerator/Denominator == other.Numerator/other.Denominator;
+            if (Numerator == other.Numerator && Denominator == other.Denominator)
+            {
+                return true;
+            }
+
+            var left = Numerator / (double) Denominator;
+            var right = other.Numerator / (double) other.Denominator;
+
+            return Math.Abs(left - right) <= Math.Max(Math.Abs(left), Math.Abs(right)) * 1E-15;
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfigRational && Equals((DisplayConfigRational) obj);
+            return obj is DisplayConfigRational rational && Equals(rational);
         }
 
         public override int GetHashCode()
@@ -63,12 +71,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfigRational left, DisplayConfigRational right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfigRational left, DisplayConfigRational right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

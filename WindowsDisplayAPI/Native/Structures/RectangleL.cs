@@ -40,7 +40,7 @@ namespace WindowsDisplayAPI.Native.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is RectangleL && Equals((RectangleL) obj);
+            return obj is RectangleL rectangle && Equals(rectangle);
         }
 
         public override int GetHashCode()
@@ -57,12 +57,12 @@ namespace WindowsDisplayAPI.Native.Structures
 
         public static bool operator ==(RectangleL left, RectangleL right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(RectangleL left, RectangleL right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

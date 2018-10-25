@@ -43,7 +43,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfigVideoSignalInfo && Equals((DisplayConfigVideoSignalInfo) obj);
+            return obj is DisplayConfigVideoSignalInfo info && Equals(info);
         }
 
         public override int GetHashCode()
@@ -64,12 +64,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfigVideoSignalInfo left, DisplayConfigVideoSignalInfo right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfigVideoSignalInfo left, DisplayConfigVideoSignalInfo right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

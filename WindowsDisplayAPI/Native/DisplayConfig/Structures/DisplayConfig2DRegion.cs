@@ -24,7 +24,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayConfig2DRegion && Equals((DisplayConfig2DRegion) obj);
+            return obj is DisplayConfig2DRegion region && Equals(region);
         }
 
         public override int GetHashCode()
@@ -37,12 +37,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public static bool operator ==(DisplayConfig2DRegion left, DisplayConfig2DRegion right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(DisplayConfig2DRegion left, DisplayConfig2DRegion right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
     }
 }

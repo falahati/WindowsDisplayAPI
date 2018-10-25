@@ -46,7 +46,7 @@ namespace WindowsDisplayAPI.Native.Structures
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is LUID && Equals((LUID) obj);
+            return obj is LUID luid && Equals(luid);
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace WindowsDisplayAPI.Native.Structures
         /// <returns>true, if both objects are equal, otherwise false</returns>
         public static bool operator ==(LUID left, LUID right)
         {
-            return left.Equals(right);
+            return Equals(left, right) || left.Equals(right);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace WindowsDisplayAPI.Native.Structures
         /// <returns>true, if both objects are not equal, otherwise false</returns>
         public static bool operator !=(LUID left, LUID right)
         {
-            return !left.Equals(right);
+            return !(left == right);
         }
 
         /// <inheritdoc />
