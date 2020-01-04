@@ -12,6 +12,7 @@ namespace WindowsDisplayAPI
     [Serializable]
     public class Display : DisplayDevice
     {
+        public Display() { }
         /// <summary>
         ///     Creates a new Display
         /// </summary>

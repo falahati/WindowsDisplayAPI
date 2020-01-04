@@ -13,6 +13,7 @@ namespace WindowsDisplayAPI
     [Serializable]
     public class DisplayAdapter : Device
     {
+        public DisplayAdapter() { }
         /// <summary>
         ///     Creates a new DisplayAdapter
         /// </summary>
