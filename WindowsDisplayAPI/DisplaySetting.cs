@@ -13,6 +13,7 @@ namespace WindowsDisplayAPI
     /// <summary>
     ///     Holds configurations of a windows display
     /// </summary>
+    [Serializable]
     public class DisplaySetting : DisplayPossibleSetting
     {
         /// <summary>

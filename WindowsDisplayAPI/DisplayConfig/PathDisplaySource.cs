@@ -11,8 +11,10 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Represents a display path source
     /// </summary>
+    [Serializable]
     public class PathDisplaySource : IEquatable<PathDisplaySource>
     {
+        public PathDisplaySource() { }
         /// <summary>
         ///     Creates a new PathDisplaySource
         /// </summary>

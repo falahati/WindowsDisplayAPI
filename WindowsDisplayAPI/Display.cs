@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using WindowsDisplayAPI.Exceptions;
@@ -8,6 +9,7 @@ namespace WindowsDisplayAPI
     /// <summary>
     ///     Represents a Windows Attached Display Device
     /// </summary>
+    [Serializable]
     public class Display : DisplayDevice
     {
         /// <summary>

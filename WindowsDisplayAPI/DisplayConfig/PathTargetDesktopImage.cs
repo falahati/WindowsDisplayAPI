@@ -8,8 +8,10 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Contains information about the target desktop image
     /// </summary>
+    [Serializable]
     public class PathTargetDesktopImage : IEquatable<PathTargetDesktopImage>
     {
+        public PathTargetDesktopImage() { }
         /// <summary>
         ///     Creates a new PathTargetDesktopImage
         /// </summary>

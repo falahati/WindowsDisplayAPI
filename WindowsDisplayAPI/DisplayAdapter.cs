@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WindowsDisplayAPI.DisplayConfig;
 using WindowsDisplayAPI.Native;
@@ -9,6 +10,7 @@ namespace WindowsDisplayAPI
     /// <summary>
     ///     Represents a Windows Video Controller Display Adapter Device
     /// </summary>
+    [Serializable]
     public class DisplayAdapter : Device
     {
         /// <summary>

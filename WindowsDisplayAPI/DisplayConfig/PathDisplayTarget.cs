@@ -14,8 +14,10 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Represents a display path target (Display Device)
     /// </summary>
+    [Serializable]
     public class PathDisplayTarget : IEquatable<PathDisplayTarget>
     {
+        public PathDisplayTarget() { }
         /// <summary>
         ///     Creates a new PathDisplayTarget
         /// </summary>

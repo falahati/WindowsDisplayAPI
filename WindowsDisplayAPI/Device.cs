@@ -1,10 +1,14 @@
-﻿namespace WindowsDisplayAPI
+﻿using System;
+
+namespace WindowsDisplayAPI
 {
     /// <summary>
     ///     Represents a Windows Video Device including Display Devices and Video Controllers
     /// </summary>
+    [Serializable]
     public abstract class Device
     {
+        public Device() { }
         /// <summary>
         ///     Creates a new Device
         /// </summary>

@@ -11,8 +11,10 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Reresents a path display adapter
     /// </summary>
+    [Serializable]
     public class PathDisplayAdapter : IEquatable<PathDisplayAdapter>
     {
+        public PathDisplayAdapter() { }
         /// <summary>
         /// Creates a new PathDisplayAdapter
         /// </summary>

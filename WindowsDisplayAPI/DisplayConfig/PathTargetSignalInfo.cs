@@ -8,8 +8,10 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Contains information about the target signal info
     /// </summary>
+    [Serializable]
     public class PathTargetSignalInfo : IEquatable<PathTargetSignalInfo>
     {
+        public PathTargetSignalInfo() { }
         /// <summary>
         ///     Creates a new PathTargetSignalInfo
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WindowsDisplayAPI.DisplayConfig;
 using WindowsDisplayAPI.Native;
@@ -10,8 +11,10 @@ namespace WindowsDisplayAPI
     /// <summary>
     ///     Represents a Windows Display Device
     /// </summary>
+    [Serializable]
     public class DisplayDevice : Device
     {
+        public DisplayDevice() { }
         /// <summary>
         ///     Creates a new DisplayDevice
         /// </summary>

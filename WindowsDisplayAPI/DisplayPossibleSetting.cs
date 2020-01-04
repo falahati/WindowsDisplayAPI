@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using WindowsDisplayAPI.Native.DeviceContext;
 using WindowsDisplayAPI.Native.DeviceContext.Structures;
 
@@ -7,8 +8,10 @@ namespace WindowsDisplayAPI
     /// <summary>
     ///     Represents a possible display setting
     /// </summary>
+    [Serializable]
     public class DisplayPossibleSetting
     {
+        public DisplayPossibleSetting() { }
         /// <summary>
         ///     Creates a new DisplayPossibleSetting
         /// </summary>

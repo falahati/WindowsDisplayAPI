@@ -1,4 +1,5 @@
-﻿using WindowsDisplayAPI.Exceptions;
+﻿using System;
+using WindowsDisplayAPI.Exceptions;
 using WindowsDisplayAPI.Native.DisplayConfig;
 using WindowsDisplayAPI.Native.DisplayConfig.Structures;
 
@@ -7,11 +8,13 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Represents a path and its target
     /// </summary>
+    [Serializable]
     public class PathTargetInfo
     {
         private readonly PathTargetDesktopImage _desktopImage;
         private readonly PathTargetSignalInfo _signalInfo;
 
+        public PathTargetInfo() { }
         /// <summary>
         ///     Creates a new PathTargetInfo
         /// </summary>

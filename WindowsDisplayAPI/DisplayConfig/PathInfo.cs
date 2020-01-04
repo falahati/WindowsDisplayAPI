@@ -14,12 +14,15 @@ namespace WindowsDisplayAPI.DisplayConfig
     /// <summary>
     ///     Represents a path root information
     /// </summary>
+    [Serializable]
     public class PathInfo
     {
         private readonly uint _cloneGroupId;
         private readonly DisplayConfigPixelFormat _pixelFormat;
         private readonly Point _position;
         private readonly Size _resolution;
+        public PathInfo() { }
+
 
         /// <summary>
         ///     Creates a new PathInfo
