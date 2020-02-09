@@ -17,6 +17,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         {
             AdapterId = adapterId;
             Size = (uint) Marshal.SizeOf(requestType);
+
             if (requestType == typeof(DisplayConfigSourceDeviceName))
             {
                 Type = DisplayConfigDeviceInfoType.GetSourceName;
@@ -41,6 +42,14 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             {
                 Type = DisplayConfigDeviceInfoType.GetTargetBaseType;
             }
+            else if (requestType == typeof(DisplayConfigGetSourceDPIScale))
+            {
+                Type = DisplayConfigDeviceInfoType.GetSourceDPIScale;
+            }
+            else if (requestType == typeof(DisplayConfigSetSourceDPIScale))
+            {
+                Type = DisplayConfigDeviceInfoType.SetSourceDPIScale;
+            }
             else if (requestType == typeof(DisplayConfigSupportVirtualResolution))
             {
                 // do nothing
@@ -53,8 +62,8 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             Id = id;
         }
 
-        public DisplayConfigDeviceInfoHeader(LUID adapterId, uint id, Type requestType,
-            DisplayConfigDeviceInfoType request) : this(adapterId, id, requestType)
+        public DisplayConfigDeviceInfoHeader(LUID adapterId, uint id, Type requestType, DisplayConfigDeviceInfoType request)
+            : this(adapterId, id, requestType)
         {
             Type = request;
         }

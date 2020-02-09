@@ -1,7 +1,9 @@
 ﻿namespace WindowsDisplayAPI.Native.DisplayConfig
 {
-    internal enum DisplayConfigDeviceInfoType : uint
+    internal enum DisplayConfigDeviceInfoType
     {
+        SetSourceDPIScale = -4,
+        GetSourceDPIScale = -3,
         GetSourceName = 1,
         GetTargetName = 2,
         GetTargetPreferredMode = 3,
@@ -9,6 +11,6 @@
         SetTargetPersistence = 5,
         GetTargetBaseType = 6,
         GetSupportVirtualResolution = 7,
-        SetSupportVirtualResolution = 8
+        SetSupportVirtualResolution = 8,
     }
 }

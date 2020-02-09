@@ -9,48 +9,88 @@ namespace WindowsDisplayAPI.Native
     {
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigGetDeviceInfo(
-            ref DisplayConfigSupportVirtualResolution targetSupportVirtualResolution);
-
-        [DllImport("user32")]
-        public static extern Win32Status DisplayConfigGetDeviceInfo(ref DisplayConfigTargetDeviceName deviceName);
-
-        [DllImport("user32")]
-        public static extern Win32Status DisplayConfigGetDeviceInfo(ref DisplayConfigAdapterName deviceName);
-
-        [DllImport("user32")]
-        public static extern Win32Status DisplayConfigGetDeviceInfo(ref DisplayConfigSourceDeviceName deviceName);
+            ref DisplayConfigSupportVirtualResolution targetSupportVirtualResolution
+        );
 
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigGetDeviceInfo(
-            ref DisplayConfigTargetPreferredMode targetPreferredMode);
+            ref DisplayConfigGetSourceDPIScale targetSupportVirtualResolution
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status DisplayConfigGetDeviceInfo(ref DisplayConfigTargetBaseType targetBaseType);
+        public static extern Win32Status DisplayConfigGetDeviceInfo(
+            ref DisplayConfigTargetDeviceName deviceName
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status DisplayConfigSetDeviceInfo(DisplayConfigSetTargetPersistence targetPersistence);
+        public static extern Win32Status DisplayConfigGetDeviceInfo(
+            ref DisplayConfigAdapterName deviceName
+        );
+
+        [DllImport("user32")]
+        public static extern Win32Status DisplayConfigGetDeviceInfo(
+            ref DisplayConfigSourceDeviceName deviceName
+        );
+
+        [DllImport("user32")]
+        public static extern Win32Status DisplayConfigGetDeviceInfo(
+            ref DisplayConfigTargetPreferredMode targetPreferredMode
+        );
+
+        [DllImport("user32")]
+        public static extern Win32Status DisplayConfigGetDeviceInfo(
+            ref DisplayConfigTargetBaseType targetBaseType
+        );
 
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigSetDeviceInfo(
-            DisplayConfigSupportVirtualResolution targetSupportVirtualResolution);
+            DisplayConfigSetTargetPersistence targetPersistence
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status GetDisplayConfigBufferSizes(QueryDeviceConfigFlags flags,
-            out uint pathArrayElements, out uint modeInfoArrayElements);
+        public static extern Win32Status DisplayConfigSetDeviceInfo(
+            DisplayConfigSupportVirtualResolution targetSupportVirtualResolution
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status QueryDisplayConfig(QueryDeviceConfigFlags flags, ref uint pathArrayElements,
-            [Out] DisplayConfigPathInfo[] pathInfoArray, ref uint modeInfoArrayElements,
-            [Out] DisplayConfigModeInfo[] modeInfoArray, IntPtr currentTopologyId);
+        public static extern Win32Status DisplayConfigSetDeviceInfo(
+            DisplayConfigSetSourceDPIScale setSourceDpiScale
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status QueryDisplayConfig(QueryDeviceConfigFlags flags, ref uint pathArrayElements,
-            [Out] DisplayConfigPathInfo[] pathInfoArray, ref uint modeInfoArrayElements,
-            [Out] DisplayConfigModeInfo[] modeInfoArray, [Out] out DisplayConfigTopologyId currentTopologyId);
+        public static extern Win32Status GetDisplayConfigBufferSizes(
+            QueryDeviceConfigFlags flags,
+            out uint pathArrayElements,
+            out uint modeInfoArrayElements
+        );
 
         [DllImport("user32")]
-        public static extern Win32Status SetDisplayConfig([In] uint pathArrayElements,
-            [In] DisplayConfigPathInfo[] pathInfoArray, [In] uint modeInfoArrayElements,
-            [In] DisplayConfigModeInfo[] modeInfoArray, [In] SetDisplayConfigFlags flags);
+        public static extern Win32Status QueryDisplayConfig(
+            QueryDeviceConfigFlags flags,
+            ref uint pathArrayElements,
+            [Out] DisplayConfigPathInfo[] pathInfoArray,
+            ref uint modeInfoArrayElements,
+            [Out] DisplayConfigModeInfo[] modeInfoArray,
+            IntPtr currentTopologyId
+        );
+
+        [DllImport("user32")]
+        public static extern Win32Status QueryDisplayConfig(
+            QueryDeviceConfigFlags flags,
+            ref uint pathArrayElements,
+            [Out] DisplayConfigPathInfo[] pathInfoArray,
+            ref uint modeInfoArrayElements,
+            [Out] DisplayConfigModeInfo[] modeInfoArray,
+            [Out] out DisplayConfigTopologyId currentTopologyId
+        );
+
+        [DllImport("user32")]
+        public static extern Win32Status SetDisplayConfig(
+            [In] uint pathArrayElements,
+            [In] DisplayConfigPathInfo[] pathInfoArray,
+            [In] uint modeInfoArrayElements,
+            [In] DisplayConfigModeInfo[] modeInfoArray,
+            [In] SetDisplayConfigFlags flags
+        );
     }
 }

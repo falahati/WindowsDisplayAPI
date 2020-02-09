@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using WindowsDisplayAPI.Native;
+using WindowsDisplayAPI.Native.DisplayConfig;
 using WindowsDisplayAPI.Native.DisplayConfig.Structures;
 using WindowsDisplayAPI.Native.Structures;
 
@@ -119,6 +120,86 @@ namespace WindowsDisplayAPI.DisplayConfig
         public override string ToString()
         {
             return DisplayName;
+        }
+
+        /// <summary>
+        ///     Gets and sets the current source DPI scaling
+        /// </summary>
+        public DisplayConfigSourceDPIScale CurrentScaling
+        {
+            get
+            {
+                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
+                    .Cast<DisplayConfigSourceDPIScale>()
+                    .OrderBy(scaling => (int) scaling)
+                    .ToArray();
+
+                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                if (result != Win32Status.Success)
+                    throw new Win32Exception((int)result);
+
+                var currentScaleIndex = Math.Abs(dpiScaling.MinimumScaleSteps) + dpiScaling.CurrentScaleSteps;
+
+                return scales[currentScaleIndex];
+            }
+            set
+            {
+                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
+                    .Cast<DisplayConfigSourceDPIScale>()
+                    .OrderBy(scaling => (int)scaling)
+                    .ToArray();
+                var currentScaleStep = Array.IndexOf(scales, value) - Array.IndexOf(scales, RecommendedScaling);
+
+                var dpiScaling = new DisplayConfigSetSourceDPIScale(Adapter.AdapterId, SourceId, currentScaleStep);
+                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(dpiScaling);
+                if (result != Win32Status.Success)
+                    throw new Win32Exception((int)result);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the recommended DPI scaling for this source
+        /// </summary>
+        public DisplayConfigSourceDPIScale RecommendedScaling
+        {
+            get
+            {
+                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
+                    .Cast<DisplayConfigSourceDPIScale>()
+                    .OrderBy(scaling => (int)scaling)
+                    .ToArray();
+
+                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                if (result != Win32Status.Success)
+                    throw new Win32Exception((int)result);
+
+                return scales[Math.Abs(dpiScaling.MinimumScaleSteps)];
+            }
+        }
+
+        /// <summary>
+        ///     Gets the maximum DPI scaling for this source
+        /// </summary>
+        public DisplayConfigSourceDPIScale MaximumScaling
+        {
+            get
+            {
+                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
+                    .Cast<DisplayConfigSourceDPIScale>()
+                    .OrderBy(scaling => (int)scaling)
+                    .ToArray();
+
+                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                if (result != Win32Status.Success)
+                    throw new Win32Exception((int)result);
+
+                var currentScaleIndex = Math.Abs(dpiScaling.MinimumScaleSteps) + dpiScaling.MaximumScaleSteps;
+
+                return scales[currentScaleIndex];
+            }
         }
 
         /// <summary>
