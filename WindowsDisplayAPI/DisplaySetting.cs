@@ -20,7 +20,7 @@ namespace WindowsDisplayAPI
         /// </summary>
         /// <param name="validSetting">The basic configuration information object</param>
         /// <param name="position">Display position on desktop</param>
-        public DisplaySetting(DisplayPossibleSetting validSetting, Point position = default(Point))
+        public DisplaySetting(DisplayPossibleSetting validSetting, Point position = default)
             : this(validSetting, position, DisplayOrientation.Identity, DisplayFixedOutput.Default)
         {
         }
@@ -35,7 +35,8 @@ namespace WindowsDisplayAPI
         ///     Display output behavior in case of presenting a low-resolution mode on a
         ///     higher-resolution display
         /// </param>
-        public DisplaySetting(DisplayPossibleSetting validSetting,
+        public DisplaySetting(
+            DisplayPossibleSetting validSetting,
             Point position,
             DisplayOrientation orientation,
             DisplayFixedOutput outputScalingMode)
@@ -79,8 +80,13 @@ namespace WindowsDisplayAPI
         ///     Display output behavior in case of presenting a low-resolution mode on a
         ///     higher-resolution display
         /// </param>
-        public DisplaySetting(Size resolution, Point position, ColorDepth colorDepth, int frequency,
-            bool isInterlaced = false, DisplayOrientation orientation = DisplayOrientation.Identity,
+        public DisplaySetting(
+            Size resolution,
+            Point position,
+            ColorDepth colorDepth,
+            int frequency,
+            bool isInterlaced = false,
+            DisplayOrientation orientation = DisplayOrientation.Identity,
             DisplayFixedOutput outputScalingMode = DisplayFixedOutput.Default
         ) : base(resolution, frequency, colorDepth, isInterlaced)
         {
@@ -93,7 +99,7 @@ namespace WindowsDisplayAPI
         {
         }
 
-        internal DisplaySetting() : base(default(DeviceMode))
+        internal DisplaySetting() : base(default)
         {
             IsEnable = false;
         }
@@ -105,7 +111,9 @@ namespace WindowsDisplayAPI
             OutputScalingMode = deviceMode.DisplayFixedOutput;
 
             if (Resolution.IsEmpty && Position.IsEmpty)
+            {
                 IsEnable = false;
+            }
         }
 
 
@@ -140,8 +148,11 @@ namespace WindowsDisplayAPI
                 IntPtr.Zero,
                 ChangeDisplaySettingsFlags.Reset,
                 IntPtr.Zero);
+
             if (result != ChangeDisplaySettingsExResults.Successful)
+            {
                 throw new ModeChangeException($"[{result}]: Applying saved settings failed.", null, result);
+            }
         }
 
         /// <summary>
@@ -149,7 +160,8 @@ namespace WindowsDisplayAPI
         /// </summary>
         /// <param name="newDisplaySettings">A key value dictionary of DisplayDevices and DisplaySettings</param>
         /// <param name="applyNow">Indicating if the changes should be applied immediately, recommended value is false</param>
-        public static void SaveDisplaySettings(Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
+        public static void SaveDisplaySettings(
+            Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
             bool applyNow)
         {
             SaveDisplaySettings(newDisplaySettings, applyNow, true);
@@ -158,24 +170,29 @@ namespace WindowsDisplayAPI
         private static DeviceMode GetDeviceMode(DisplayDevice display, bool current)
         {
             var deviceMode = new DeviceMode(DeviceModeFields.None);
+
             return !string.IsNullOrWhiteSpace(display.DisplayName) &&
                    DeviceContextApi.EnumDisplaySettings(display.DisplayName,
                        current ? DisplaySettingsMode.CurrentSettings : DisplaySettingsMode.RegistrySettings,
                        ref deviceMode)
                 ? deviceMode
-                : default(DeviceMode);
+                : default;
         }
 
-        private static void SaveDisplaySettings(Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
-            bool applyNow, bool retry)
+        private static void SaveDisplaySettings(
+            Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
+            bool applyNow,
+            bool retry)
         {
             var rollBackState =
                 Display.GetDisplays()
                     .Where(display => display.IsValid)
                     .ToDictionary(display => (DisplayDevice) display, display => display.CurrentSetting);
+
             try
             {
                 var currentDisplaySettings = rollBackState.ToList();
+
                 foreach (var displaySetting in newDisplaySettings)
                 {
                     currentDisplaySettings.Remove(
@@ -190,15 +207,22 @@ namespace WindowsDisplayAPI
                     currentDisplaySettings.Where(pair => pair.Key is Display)
                         .Select(pair => pair.Key as Display)
                         .Where(display => display?.IsValid == true))
+                {
                     displaySetting.Disable(false);
+                }
 
                 if (applyNow)
+                {
                     ApplySavedSettings();
+                }
             }
             catch (ModeChangeException)
             {
                 if (retry)
+                {
                     SaveDisplaySettings(rollBackState, false, false);
+                }
+
                 throw;
             }
         }
@@ -207,8 +231,11 @@ namespace WindowsDisplayAPI
         public override string ToString()
         {
             if (IsEnable)
+            {
                 return
                     $"{Resolution} {(IsInterlaced ? "Interlaced" : "Progressive")} {Frequency}hz @ {ColorDepth} @ {Position}";
+            }
+
             return "Disabled";
         }
 
@@ -217,33 +244,64 @@ namespace WindowsDisplayAPI
             var deviceMode = GetDeviceMode(display);
             var flags = ChangeDisplaySettingsFlags.UpdateRegistry | ChangeDisplaySettingsFlags.Global;
             flags |= reset ? ChangeDisplaySettingsFlags.Reset : ChangeDisplaySettingsFlags.NoReset;
-            if (IsEnable && (Position.X == 0) && (Position.Y == 0))
+
+            if (IsEnable && Position.X == 0 && Position.Y == 0)
+            {
                 flags |= ChangeDisplaySettingsFlags.SetPrimary;
-            var result = DeviceContextApi.ChangeDisplaySettingsEx(display.DisplayName, ref deviceMode, IntPtr.Zero,
+            }
+
+            var result = DeviceContextApi.ChangeDisplaySettingsEx(
+                display.DisplayName,
+                ref deviceMode,
+                IntPtr.Zero,
                 flags,
-                IntPtr.Zero);
+                IntPtr.Zero
+            );
+
             if (result != ChangeDisplaySettingsExResults.Successful)
+            {
                 throw new ModeChangeException($"[{result}]: Applying saved settings failed.", display, result);
+            }
         }
 
         private DeviceMode GetDeviceMode(DisplayDevice display)
         {
             DeviceMode deviceMode;
+
             if (IsEnable)
             {
                 var flags = DisplayFlags.None;
+
                 if (IsInterlaced)
+                {
                     flags |= DisplayFlags.Interlaced;
-                deviceMode = new DeviceMode(display.DisplayName, new PointL(Position), Orientation, OutputScalingMode,
-                    (uint) ColorDepth, (uint) Resolution.Width, (uint) Resolution.Height, flags, (uint) Frequency);
+                }
+
+                deviceMode = new DeviceMode(
+                    display.DisplayName,
+                    new PointL(Position),
+                    Orientation,
+                    OutputScalingMode,
+                    (uint) ColorDepth,
+                    (uint) Resolution.Width,
+                    (uint) Resolution.Height,
+                    flags,
+                    (uint) Frequency
+                );
             }
             else
             {
-                deviceMode = new DeviceMode(display.DisplayName,
-                    DeviceModeFields.PelsWidth | DeviceModeFields.PelsHeight | DeviceModeFields.Position);
+                deviceMode = new DeviceMode(
+                    display.DisplayName,
+                    DeviceModeFields.PelsWidth | DeviceModeFields.PelsHeight | DeviceModeFields.Position
+                );
             }
+
             if (string.IsNullOrWhiteSpace(deviceMode.DeviceName))
+            {
                 throw new MissingDisplayException("Display device is missing or invalid.", display.DevicePath);
+            }
+
             return deviceMode;
         }
     }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WindowsDisplayAPI.Native.DisplayConfig
+﻿namespace WindowsDisplayAPI.Native.DisplayConfig
 {
     public enum DisplayConfigSourceDPIScale : uint
     {
@@ -17,6 +13,6 @@ namespace WindowsDisplayAPI.Native.DisplayConfig
         Scale350Percent = 350,
         Scale400Percent = 400,
         Scale450Percent = 450,
-        Scale500Percent = 500,
+        Scale500Percent = 500
     }
 }

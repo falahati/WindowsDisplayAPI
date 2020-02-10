@@ -10,7 +10,9 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.Struct)] public readonly DisplayConfigPathTargetInfo TargetInfo;
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayConfigPathInfoFlags Flags;
 
-        public DisplayConfigPathInfo(DisplayConfigPathSourceInfo sourceInfo, DisplayConfigPathTargetInfo targetInfo,
+        public DisplayConfigPathInfo(
+            DisplayConfigPathSourceInfo sourceInfo,
+            DisplayConfigPathTargetInfo targetInfo,
             DisplayConfigPathInfoFlags flags)
         {
             SourceInfo = sourceInfo;

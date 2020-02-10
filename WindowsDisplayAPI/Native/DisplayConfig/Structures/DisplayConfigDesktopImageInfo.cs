@@ -13,7 +13,9 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.Struct)] public readonly RectangleL DesktopImageRegion;
         [MarshalAs(UnmanagedType.Struct)] public readonly RectangleL DesktopImageClip;
 
-        public DisplayConfigDesktopImageInfo(PointL pathSourceSize, RectangleL desktopImageRegion,
+        public DisplayConfigDesktopImageInfo(
+            PointL pathSourceSize,
+            RectangleL desktopImageRegion,
             RectangleL desktopImageClip)
         {
             PathSourceSize = pathSourceSize;
@@ -23,13 +25,18 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigDesktopImageInfo other)
         {
-            return (PathSourceSize == other.PathSourceSize) && (DesktopImageRegion == other.DesktopImageRegion) &&
-                   (DesktopImageClip == other.DesktopImageClip);
+            return PathSourceSize == other.PathSourceSize &&
+                   DesktopImageRegion == other.DesktopImageRegion &&
+                   DesktopImageClip == other.DesktopImageClip;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigDesktopImageInfo info && Equals(info);
         }
 
@@ -38,8 +45,9 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             unchecked
             {
                 var hashCode = PathSourceSize.GetHashCode();
-                hashCode = (hashCode*397) ^ DesktopImageRegion.GetHashCode();
-                hashCode = (hashCode*397) ^ DesktopImageClip.GetHashCode();
+                hashCode = (hashCode * 397) ^ DesktopImageRegion.GetHashCode();
+                hashCode = (hashCode * 397) ^ DesktopImageClip.GetHashCode();
+
                 return hashCode;
             }
         }

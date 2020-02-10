@@ -9,13 +9,24 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
     internal struct DisplayConfigModeInfo : IEquatable<DisplayConfigModeInfo>
     {
         public const uint InvalidModeIndex = 0xffffffff;
-        [MarshalAs(UnmanagedType.U4)] [FieldOffset(0)] public readonly DisplayConfigModeInfoType InfoType;
-        [MarshalAs(UnmanagedType.U4)] [FieldOffset(4)] public readonly uint Id;
-        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(8)] public readonly LUID AdapterId;
-        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)] public readonly DisplayConfigTargetMode TargetMode;
-        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)] public readonly DisplayConfigSourceMode SourceMode;
 
-        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)] public readonly DisplayConfigDesktopImageInfo
+        [MarshalAs(UnmanagedType.U4)] [FieldOffset(0)]
+        public readonly DisplayConfigModeInfoType InfoType;
+
+        [MarshalAs(UnmanagedType.U4)] [FieldOffset(4)]
+        public readonly uint Id;
+
+        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(8)]
+        public readonly LUID AdapterId;
+
+        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)]
+        public readonly DisplayConfigTargetMode TargetMode;
+
+        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)]
+        public readonly DisplayConfigSourceMode SourceMode;
+
+        [MarshalAs(UnmanagedType.Struct)] [FieldOffset(16)]
+        public readonly DisplayConfigDesktopImageInfo
             DesktopImageInfo;
 
         public DisplayConfigModeInfo(LUID adapterId, uint id, DisplayConfigTargetMode targetMode) : this()
@@ -44,16 +55,22 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigModeInfo other)
         {
-            return (InfoType == other.InfoType) && (Id == other.Id) && AdapterId == other.AdapterId &&
-                   (((InfoType == DisplayConfigModeInfoType.Source) && (SourceMode == other.SourceMode)) ||
-                    ((InfoType == DisplayConfigModeInfoType.Target) && (TargetMode == other.TargetMode)) ||
-                    ((InfoType == DisplayConfigModeInfoType.DesktopImage) &&
-                     (DesktopImageInfo == other.DesktopImageInfo)));
+            return InfoType == other.InfoType &&
+                   Id == other.Id &&
+                   AdapterId == other.AdapterId &&
+                   (InfoType == DisplayConfigModeInfoType.Source && SourceMode == other.SourceMode ||
+                    InfoType == DisplayConfigModeInfoType.Target && TargetMode == other.TargetMode ||
+                    InfoType == DisplayConfigModeInfoType.DesktopImage &&
+                    DesktopImageInfo == other.DesktopImageInfo);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigModeInfo info && Equals(info);
         }
 
@@ -62,20 +79,25 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             unchecked
             {
                 var hashCode = (int) InfoType;
-                hashCode = (hashCode*397) ^ (int) Id;
-                hashCode = (hashCode*397) ^ AdapterId.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) Id;
+                hashCode = (hashCode * 397) ^ AdapterId.GetHashCode();
+
                 switch (InfoType)
                 {
                     case DisplayConfigModeInfoType.Source:
-                        hashCode = (hashCode*397) ^ SourceMode.GetHashCode();
+                        hashCode = (hashCode * 397) ^ SourceMode.GetHashCode();
+
                         break;
                     case DisplayConfigModeInfoType.Target:
-                        hashCode = (hashCode*397) ^ TargetMode.GetHashCode();
+                        hashCode = (hashCode * 397) ^ TargetMode.GetHashCode();
+
                         break;
                     case DisplayConfigModeInfoType.DesktopImage:
-                        hashCode = (hashCode*397) ^ DesktopImageInfo.GetHashCode();
+                        hashCode = (hashCode * 397) ^ DesktopImageInfo.GetHashCode();
+
                         break;
                 }
+
                 return hashCode;
             }
         }

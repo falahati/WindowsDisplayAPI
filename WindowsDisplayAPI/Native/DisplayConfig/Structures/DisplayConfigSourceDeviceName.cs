@@ -9,7 +9,9 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         [MarshalAs(UnmanagedType.Struct)] private readonly DisplayConfigDeviceInfoHeader _Header;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public readonly string DeviceName;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public readonly string DeviceName;
 
         public DisplayConfigSourceDeviceName(LUID adapter, uint sourceId) : this()
         {

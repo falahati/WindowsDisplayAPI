@@ -30,7 +30,9 @@ namespace WindowsDisplayAPI.Native
             ref DeviceMode devMode);
 
         [DllImport("user32", CharSet = CharSet.Ansi)]
-        internal static extern bool EnumDisplayDevices(string deviceName, uint deviceNumber,
+        internal static extern bool EnumDisplayDevices(
+            string deviceName,
+            uint deviceNumber,
             ref DeviceContext.Structures.DisplayDevice displayDevice,
             uint flags);
     }

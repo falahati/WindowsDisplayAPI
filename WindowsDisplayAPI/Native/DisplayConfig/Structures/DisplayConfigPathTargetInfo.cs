@@ -17,8 +17,16 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayConfigScanLineOrdering ScanLineOrdering;
         [MarshalAs(UnmanagedType.Bool)] public readonly bool TargetAvailable;
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayConfigPathTargetInfoFlags StatusFlags;
-        public ushort TargetModeInfoIndex => (ushort) ((ModeInfoIndex << 16) >> 16);
-        public ushort DesktopModeInfoIndex => (ushort) (ModeInfoIndex >> 16);
+
+        public ushort TargetModeInfoIndex
+        {
+            get => (ushort) ((ModeInfoIndex << 16) >> 16);
+        }
+
+        public ushort DesktopModeInfoIndex
+        {
+            get => (ushort) (ModeInfoIndex >> 16);
+        }
 
         public DisplayConfigPathTargetInfo(
             LUID adapterId,

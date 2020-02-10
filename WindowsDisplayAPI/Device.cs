@@ -47,16 +47,27 @@
         /// <exception cref="WindowsDisplayAPI.Exceptions.InvalidRegistryAddressException">Registry address is invalid or unknown.</exception>
         public Microsoft.Win32.RegistryKey OpenDeviceKey()
         {
-            if (string.IsNullOrWhiteSpace(DeviceKey))
+            if (string.IsNullOrWhiteSpace(DeviceKey)) {
                 return null;
+            }
+
             const string machineRootName = "\\Registry\\Machine\\";
             const string userRootName = "\\Registry\\Current\\";
-            if (DeviceKey.StartsWith(machineRootName, System.StringComparison.InvariantCultureIgnoreCase))
-                return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(DeviceKey.Substring(machineRootName.Length),
-                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
-            if (DeviceKey.StartsWith(userRootName, System.StringComparison.InvariantCultureIgnoreCase))
-                return Microsoft.Win32.Registry.Users.OpenSubKey(DeviceKey.Substring(userRootName.Length),
-                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
+
+            if (DeviceKey.StartsWith(machineRootName, System.StringComparison.InvariantCultureIgnoreCase)) {
+                return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                    DeviceKey.Substring(machineRootName.Length),
+                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree
+                );
+            }
+
+            if (DeviceKey.StartsWith(userRootName, System.StringComparison.InvariantCultureIgnoreCase)) {
+                return Microsoft.Win32.Registry.Users.OpenSubKey(
+                    DeviceKey.Substring(userRootName.Length),
+                    Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree
+                );
+            }
+
             throw new Exceptions.InvalidRegistryAddressException("Registry address is invalid or unknown.");
         }
 
@@ -66,8 +77,10 @@
         /// <returns>A RegistryKey instance for successful call, otherwise null</returns>
         public Microsoft.Win32.RegistryKey OpenDevicePnPKey()
         {
-            if (string.IsNullOrWhiteSpace(DevicePath))
+            if (string.IsNullOrWhiteSpace(DevicePath)) {
                 return null;
+            }
+
             var path = DevicePath;
             if (path.StartsWith("\\\\?\\"))
             {
@@ -75,12 +88,16 @@
                 if (path.EndsWith("}"))
                 {
                     var guidIndex = path.LastIndexOf("{", System.StringComparison.InvariantCulture);
-                    if (guidIndex > 0)
+                    if (guidIndex > 0) {
                         path = path.Substring(0, guidIndex);
+                    }
                 }
             }
-            return Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum\\" + path,
-                Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
+
+            return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                "SYSTEM\\CurrentControlSet\\Enum\\" + path,
+                Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree
+            );
         }
 #endif
     }

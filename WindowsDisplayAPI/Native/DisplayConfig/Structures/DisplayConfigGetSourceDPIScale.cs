@@ -9,13 +9,15 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
     {
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         [MarshalAs(UnmanagedType.Struct)] private readonly DisplayConfigDeviceInfoHeader _Header;
-        [MarshalAs(UnmanagedType.U4)] private readonly int _MinimumScaleSteps;
-        [MarshalAs(UnmanagedType.U4)] private readonly int _CurrentScaleSteps;
-        [MarshalAs(UnmanagedType.U4)] private readonly int _MaximumScaleSteps;
 
-        public int MinimumScaleSteps => _MinimumScaleSteps;
-        public int CurrentScaleSteps => _CurrentScaleSteps;
-        public int MaximumScaleSteps => _MaximumScaleSteps;
+        [field: MarshalAs(UnmanagedType.U4)]
+        public int MinimumScaleSteps { get; }
+
+        [field: MarshalAs(UnmanagedType.U4)]
+        public int CurrentScaleSteps { get; }
+
+        [field: MarshalAs(UnmanagedType.U4)]
+        public int MaximumScaleSteps { get; }
 
         public DisplayConfigGetSourceDPIScale(LUID adapter, uint sourceId) : this()
         {

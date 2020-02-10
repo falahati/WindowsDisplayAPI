@@ -38,8 +38,8 @@ namespace WindowsDisplayAPI.DisplayConfig
             DisplayConfigScanLineOrdering scanLineOrdering = DisplayConfigScanLineOrdering.NotSpecified,
             DisplayConfigRotation rotation = DisplayConfigRotation.NotSpecified,
             DisplayConfigScaling scaling = DisplayConfigScaling.Preferred,
-            bool isVirtualModeSupported = false) :
-            this(displayTarget, isVirtualModeSupported)
+            bool isVirtualModeSupported = false
+        ) : this(displayTarget, isVirtualModeSupported)
         {
             FrequencyInMillihertz = frequencyInMillihertz;
             ScanLineOrdering = scanLineOrdering;
@@ -56,8 +56,8 @@ namespace WindowsDisplayAPI.DisplayConfig
         public PathTargetInfo(
             PathDisplayTarget displayTarget,
             PathTargetSignalInfo signalInfo,
-            bool isVirtualModeSupported = false) :
-            this(displayTarget, isVirtualModeSupported)
+            bool isVirtualModeSupported = false
+        ) : this(displayTarget, isVirtualModeSupported)
         {
             _signalInfo = signalInfo;
             FrequencyInMillihertz = signalInfo.VerticalSyncFrequencyInMillihertz;
@@ -78,9 +78,15 @@ namespace WindowsDisplayAPI.DisplayConfig
             PathTargetSignalInfo signalInfo,
             DisplayConfigRotation rotation = DisplayConfigRotation.NotSpecified,
             DisplayConfigScaling scaling = DisplayConfigScaling.Preferred,
-            bool isVirtualModeSupported = false) :
-            this(displayTarget, 0, DisplayConfigScanLineOrdering.NotSpecified, rotation, scaling, isVirtualModeSupported
-            )
+            bool isVirtualModeSupported = false
+        ) : this(
+            displayTarget,
+            0,
+            DisplayConfigScanLineOrdering.NotSpecified,
+            rotation,
+            scaling,
+            isVirtualModeSupported
+        )
         {
             _signalInfo = signalInfo;
             FrequencyInMillihertz = signalInfo.VerticalSyncFrequencyInMillihertz;
@@ -99,8 +105,8 @@ namespace WindowsDisplayAPI.DisplayConfig
             PathDisplayTarget displayTarget,
             PathTargetSignalInfo signalInfo,
             PathTargetDesktopImage desktopImage,
-            bool isVirtualModeSupported = false) :
-            this(displayTarget, signalInfo, isVirtualModeSupported)
+            bool isVirtualModeSupported = false
+        ) : this(displayTarget, signalInfo, isVirtualModeSupported)
         {
             _desktopImage = desktopImage;
             IsDesktopImageInformationAvailable = true;
@@ -121,43 +127,63 @@ namespace WindowsDisplayAPI.DisplayConfig
             PathTargetDesktopImage desktopImage,
             DisplayConfigRotation rotation = DisplayConfigRotation.NotSpecified,
             DisplayConfigScaling scaling = DisplayConfigScaling.Preferred,
-            bool isVirtualModeSupported = false) :
-            this(displayTarget, signalInfo, rotation, scaling, isVirtualModeSupported)
+            bool isVirtualModeSupported = false
+        ) : this(displayTarget, signalInfo, rotation, scaling, isVirtualModeSupported)
         {
             _desktopImage = desktopImage;
             IsDesktopImageInformationAvailable = true;
         }
 
-        internal PathTargetInfo(DisplayConfigPathInfoFlags pathFlags,
+        internal PathTargetInfo(
+            DisplayConfigPathInfoFlags pathFlags,
             DisplayConfigPathTargetInfo targetInfo,
             DisplayConfigTargetMode? targetMode,
-            DisplayConfigDesktopImageInfo? desktopImageMode)
+            DisplayConfigDesktopImageInfo? desktopImageMode
+            )
         {
             IsPathActive = pathFlags.HasFlag(DisplayConfigPathInfoFlags.Active);
             IsVirtualModeSupportedByPath = pathFlags.HasFlag(DisplayConfigPathInfoFlags.SupportVirtualMode);
 
-            DisplayTarget = new PathDisplayTarget(new PathDisplayAdapter(targetInfo.AdapterId), targetInfo.TargetId,
-                targetInfo.TargetAvailable);
+            DisplayTarget = new PathDisplayTarget(
+                new PathDisplayAdapter(targetInfo.AdapterId),
+                targetInfo.TargetId,
+                targetInfo.TargetAvailable
+            );
 
             OutputTechnology = targetInfo.OutputTechnology;
             Rotation = targetInfo.Rotation;
             Scaling = targetInfo.Scaling;
             ScanLineOrdering = targetInfo.ScanLineOrdering;
             FrequencyInMillihertz = targetInfo.RefreshRate.ToValue(1000);
-            ForcedBootAvailability = targetInfo.StatusFlags.HasFlag(DisplayConfigPathTargetInfoFlags.AvailabilityBoot);
-            ForcedPathAvailability = targetInfo.StatusFlags.HasFlag(DisplayConfigPathTargetInfoFlags.AvailabilityPath);
-            ForcedSystemAvailability =
-                targetInfo.StatusFlags.HasFlag(DisplayConfigPathTargetInfoFlags.AvailabilitySystem);
-            IsCurrentlyInUse = targetInfo.StatusFlags.HasFlag(DisplayConfigPathTargetInfoFlags.InUse);
-            IsForcible = targetInfo.StatusFlags.HasFlag(DisplayConfigPathTargetInfoFlags.Forcible);
+            ForcedBootAvailability = targetInfo.StatusFlags.HasFlag(
+                DisplayConfigPathTargetInfoFlags.AvailabilityBoot
+            );
+            ForcedPathAvailability = targetInfo.StatusFlags.HasFlag(
+                DisplayConfigPathTargetInfoFlags.AvailabilityPath
+            );
+            ForcedSystemAvailability = targetInfo.StatusFlags.HasFlag(
+                DisplayConfigPathTargetInfoFlags.AvailabilitySystem
+            );
+            IsCurrentlyInUse = targetInfo.StatusFlags.HasFlag(
+                DisplayConfigPathTargetInfoFlags.InUse
+            );
+            IsForcible = targetInfo.StatusFlags.HasFlag(
+                DisplayConfigPathTargetInfoFlags.Forcible
+            );
 
             IsSignalInformationAvailable = targetMode.HasValue;
+
             if (targetMode.HasValue)
+            {
                 _signalInfo = new PathTargetSignalInfo(targetMode.Value.TargetVideoSignalInfo);
+            }
 
             IsDesktopImageInformationAvailable = desktopImageMode.HasValue;
+
             if (desktopImageMode.HasValue)
+            {
                 _desktopImage = new PathTargetDesktopImage(desktopImageMode.Value);
+            }
         }
 
         /// <summary>
@@ -169,8 +195,13 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsDesktopImageInformationAvailable)
-                    throw new MissingModeException("Desktop image information is missing or not available.",
-                        DisplayConfigModeInfoType.DesktopImage);
+                {
+                    throw new MissingModeException(
+                        "Desktop image information is missing or not available.",
+                        DisplayConfigModeInfoType.DesktopImage
+                    );
+                }
+
                 return _desktopImage;
             }
         }
@@ -191,7 +222,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         public bool ForcedPathAvailability { get; }
 
         /// <summary>
-        ///     Gets a boolean value indicating that the output is currently being forced in a nonpersistent manner
+        ///     Gets a boolean value indicating that the output is currently being forced in a non-persistent manner
         /// </summary>
         public bool ForcedSystemAvailability { get; }
 
@@ -259,8 +290,13 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsSignalInformationAvailable)
-                    throw new MissingModeException("Target mode information is missing or not available.",
-                        DisplayConfigModeInfoType.Target);
+                {
+                    throw new MissingModeException(
+                        "Target mode information is missing or not available.",
+                        DisplayConfigModeInfoType.Target
+                    );
+                }
+
                 return _signalInfo;
             }
         }
@@ -268,20 +304,26 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"{DisplayTarget}: {FrequencyInMillihertz/1000}hz{(IsCurrentlyInUse ? " [In Use]" : "")}";
+            return $"{DisplayTarget}: {FrequencyInMillihertz / 1000}hz{(IsCurrentlyInUse ? " [In Use]" : "")}";
         }
 
         internal DisplayConfigDesktopImageInfo? GetDisplayConfigDesktopImageInfo()
         {
             if (IsDesktopImageInformationAvailable)
+            {
                 return DesktopImage.GetDisplayConfigDesktopImageInfo();
+            }
+
             return null;
         }
 
         internal DisplayConfigTargetMode? GetDisplayConfigTargetMode()
         {
             if (IsSignalInformationAvailable)
+            {
                 return new DisplayConfigTargetMode(SignalInfo.GetDisplayConfigVideoSignalInfo());
+            }
+
             return null;
         }
     }

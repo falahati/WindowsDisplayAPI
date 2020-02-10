@@ -14,25 +14,35 @@ namespace WindowsDisplayAPI
         /// </summary>
         /// <param name="device">The DisplayDevice instance to copy information from</param>
         protected UnAttachedDisplay(DisplayDevice device)
-            : base(device.DevicePath, device.DeviceName, device.DeviceKey, device.Adapter,
-                device.DisplayName, device.DisplayFullName, device.IsAvailable, false)
+            : base(
+                device.DevicePath,
+                device.DeviceName,
+                device.DeviceKey,
+                device.Adapter,
+                device.DisplayName,
+                device.DisplayFullName,
+                device.IsAvailable,
+                false
+            )
         {
         }
 
         /// <inheritdoc />
-        public override bool IsAvailable => base.IsAvailable || !IsValid;
+        public override bool IsAvailable
+        {
+            get => base.IsAvailable || !IsValid;
+        }
 
         /// <inheritdoc />
         public override bool IsValid
         {
             get
             {
-                return
-                    DisplayAdapter.GetDisplayAdapters()
-                        .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
-                        .Any(
-                            device =>
-                                device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey));
+                return DisplayAdapter.GetDisplayAdapters()
+                    .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
+                    .Any(
+                        device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                    );
             }
         }
 
@@ -42,10 +52,9 @@ namespace WindowsDisplayAPI
         /// <returns>An enumerable list of UnAttachedDisplay</returns>
         public static IEnumerable<UnAttachedDisplay> GetUnAttachedDisplays()
         {
-            return
-                DisplayAdapter.GetDisplayAdapters()
-                    .SelectMany(adapter => adapter.GetDisplayDevices(false))
-                    .Select(device => new UnAttachedDisplay(device));
+            return DisplayAdapter.GetDisplayAdapters()
+                .SelectMany(adapter => adapter.GetDisplayDevices(false))
+                .Select(device => new UnAttachedDisplay(device));
         }
 
         /// <inheritdoc />
@@ -62,23 +71,26 @@ namespace WindowsDisplayAPI
         public void Enable(DisplaySetting displaySetting, bool apply = false)
         {
             if (!IsValid)
+            {
                 throw new InvalidDisplayException(DevicePath);
+            }
+
             displaySetting.Save(this, apply);
         }
 
         /// <summary>
-        ///     Returns the corresponding Display device for this unattached display. Only valid when this instance is invalidated
+        ///     Returns the corresponding Display device for this unattached display. Only functions when this instance is invalidated
         ///     due to display attachment.
         /// </summary>
         /// <returns></returns>
         public Display ToDisplay()
         {
-            if (IsValid)
-                return null;
-            return
-                Display.GetDisplays()
+            return IsValid
+                ? null
+                : Display.GetDisplays()
                     .FirstOrDefault(
-                        display => display.DevicePath.Equals(DevicePath) && display.DeviceKey.Equals(DeviceKey));
+                        display => display.DevicePath.Equals(DevicePath) && display.DeviceKey.Equals(DeviceKey)
+                    );
         }
     }
 }

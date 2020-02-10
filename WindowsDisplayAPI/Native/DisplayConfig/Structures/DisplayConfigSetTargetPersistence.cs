@@ -11,7 +11,10 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.Struct)] private readonly DisplayConfigDeviceInfoHeader _Header;
         [MarshalAs(UnmanagedType.U4)] private readonly uint _BootPersistenceOn;
 
-        public bool BootPersistence => _BootPersistenceOn > 0;
+        public bool BootPersistence
+        {
+            get => _BootPersistenceOn > 0;
+        }
 
         public DisplayConfigSetTargetPersistence(LUID adapter, uint targetId, bool bootPersistence) : this()
         {

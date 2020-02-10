@@ -29,13 +29,16 @@ namespace WindowsDisplayAPI
         {
             var device = Native.DeviceContext.Structures.DisplayDevice.Initialize();
             var deviceIds = new List<string>();
+
             for (uint i = 0; DeviceContextApi.EnumDisplayDevices(null, i, ref device, 0); i++)
             {
                 if (!deviceIds.Contains(device.DeviceId))
                 {
                     deviceIds.Add(device.DeviceId);
+
                     yield return new DisplayAdapter(device.DeviceId, device.DeviceString, device.DeviceKey);
                 }
+
                 device = Native.DeviceContext.Structures.DisplayDevice.Initialize();
             }
         }
@@ -55,9 +58,10 @@ namespace WindowsDisplayAPI
         /// <returns>An instance of PathDisplayAdapter, or null</returns>
         public PathDisplayAdapter ToPathDisplayAdapter()
         {
-            return
-                PathDisplayAdapter.GetAdapters()
-                    .FirstOrDefault(adapter => adapter.DevicePath.StartsWith("\\\\?\\" + DevicePath.Replace("\\", "#")));
+            return PathDisplayAdapter.GetAdapters()
+                .FirstOrDefault(adapter =>
+                    adapter.DevicePath.StartsWith("\\\\?\\" + DevicePath.Replace("\\", "#"))
+                );
         }
 
         internal IEnumerable<DisplayDevice> GetDisplayDevices(bool? filterByAvailability)
@@ -65,11 +69,13 @@ namespace WindowsDisplayAPI
             var returned = new Dictionary<string, string>();
 
             var adapterIndex = -1;
+
             while (true)
             {
                 adapterIndex++;
                 var adapter = Native.DeviceContext.Structures.DisplayDevice.Initialize();
-                if (!DeviceContextApi.EnumDisplayDevices(null, (uint)adapterIndex, ref adapter, 0))
+
+                if (!DeviceContextApi.EnumDisplayDevices(null, (uint) adapterIndex, ref adapter, 0))
                 {
                     break;
                 }
@@ -80,11 +86,13 @@ namespace WindowsDisplayAPI
                 }
 
                 var displayIndex = -1;
+
                 while (true)
                 {
                     displayIndex++;
                     var display = Native.DeviceContext.Structures.DisplayDevice.Initialize();
-                    if (!DeviceContextApi.EnumDisplayDevices(adapter.DeviceName, (uint)displayIndex, ref display, 1))
+
+                    if (!DeviceContextApi.EnumDisplayDevices(adapter.DeviceName, (uint) displayIndex, ref display, 1))
                     {
                         break;
                     }
@@ -98,7 +106,8 @@ namespace WindowsDisplayAPI
                     else if (displayDevice.IsAvailable == filterByAvailability.Value)
                     {
                         if (returned.ContainsKey(display.DeviceId) &&
-                            returned[display.DeviceId].Equals(display.DeviceKey))
+                            returned[display.DeviceId].Equals(display.DeviceKey)
+                        )
                         {
                             continue;
                         }

@@ -24,11 +24,13 @@ namespace WindowsDisplayAPI
             Frequency = frequency;
         }
 
-        internal DisplayPossibleSetting(DeviceMode deviceMode) : this(
-            new Size((int) deviceMode.PixelsWidth, (int) deviceMode.PixelsHeight),
-            (int) deviceMode.DisplayFrequency,
-            (ColorDepth) deviceMode.BitsPerPixel,
-            deviceMode.DisplayFlags.HasFlag(DisplayFlags.Interlaced))
+        internal DisplayPossibleSetting(DeviceMode deviceMode)
+            : this(
+                new Size((int) deviceMode.PixelsWidth, (int) deviceMode.PixelsHeight),
+                (int) deviceMode.DisplayFrequency,
+                (ColorDepth) deviceMode.BitsPerPixel,
+                deviceMode.DisplayFlags.HasFlag(DisplayFlags.Interlaced)
+            )
         {
         }
 

@@ -9,14 +9,14 @@ using WindowsDisplayAPI.Native.Structures;
 namespace WindowsDisplayAPI.DisplayConfig
 {
     /// <summary>
-    ///     Reresents a path display adapter
+    ///     Represents a path display adapter
     /// </summary>
     public class PathDisplayAdapter : IEquatable<PathDisplayAdapter>
     {
         /// <summary>
-        /// Creates a new PathDisplayAdapter
+        ///     Creates a new PathDisplayAdapter
         /// </summary>
-        /// <param name="adapterId">The adapter localally unique identification</param>
+        /// <param name="adapterId">The adapter local unique identification</param>
         public PathDisplayAdapter(LUID adapterId)
         {
             AdapterId = adapterId;
@@ -37,8 +37,12 @@ namespace WindowsDisplayAPI.DisplayConfig
             {
                 var adapterName = new DisplayConfigAdapterName(AdapterId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref adapterName);
+
                 if (result == Win32Status.Success)
+                {
                     return adapterName.AdapterDevicePath;
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -46,13 +50,24 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <summary>
         ///     Gets a boolean value indicating the instance validity
         /// </summary>
-        public bool IsInvalid => AdapterId.IsEmpty();
+        public bool IsInvalid
+        {
+            get => AdapterId.IsEmpty();
+        }
 
         /// <inheritdoc />
         public bool Equals(PathDisplayAdapter other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return AdapterId == other.AdapterId;
         }
 
@@ -62,18 +77,27 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>An array of PathDisplayAdapter instances</returns>
         public static PathDisplayAdapter[] GetAdapters()
         {
-            var luids = new Dictionary<LUID, PathDisplayAdapter>();
+            var adapters = new Dictionary<LUID, PathDisplayAdapter>();
+
             foreach (var pathInfo in PathInfo.GetAllPaths())
             {
                 if (!pathInfo.DisplaySource.Adapter.IsInvalid &&
-                    !luids.ContainsKey(pathInfo.DisplaySource.Adapter.AdapterId))
-                    luids.Add(pathInfo.DisplaySource.Adapter.AdapterId, pathInfo.DisplaySource.Adapter);
+                    !adapters.ContainsKey(pathInfo.DisplaySource.Adapter.AdapterId))
+                {
+                    adapters.Add(pathInfo.DisplaySource.Adapter.AdapterId, pathInfo.DisplaySource.Adapter);
+                }
+
                 foreach (var pathTargetInfo in pathInfo.TargetsInfo)
+                {
                     if (!pathTargetInfo.DisplayTarget.Adapter.IsInvalid &&
-                        !luids.ContainsKey(pathTargetInfo.DisplayTarget.Adapter.AdapterId))
-                        luids.Add(pathTargetInfo.DisplayTarget.Adapter.AdapterId, pathTargetInfo.DisplayTarget.Adapter);
+                        !adapters.ContainsKey(pathTargetInfo.DisplayTarget.Adapter.AdapterId))
+                    {
+                        adapters.Add(pathTargetInfo.DisplayTarget.Adapter.AdapterId, pathTargetInfo.DisplayTarget.Adapter);
+                    }
+                }
             }
-            return luids.Values.ToArray();
+
+            return adapters.Values.ToArray();
         }
 
         /// <summary>
@@ -81,7 +105,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are equal, otherwise false</returns>
+        /// <returns>true if both instances are equal, otherwise false</returns>
         public static bool operator ==(PathDisplayAdapter left, PathDisplayAdapter right)
         {
             return Equals(left, right) || left?.Equals(right) == true;
@@ -92,7 +116,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are not equal, otherwise false</returns>
+        /// <returns>true if both instances are not equal, otherwise false</returns>
         public static bool operator !=(PathDisplayAdapter left, PathDisplayAdapter right)
         {
             return !(left == right);
@@ -101,10 +125,17 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((PathDisplayAdapter) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((PathDisplayAdapter) obj);
         }
 
         /// <inheritdoc />
@@ -150,9 +181,10 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>An instance of DisplayAdapter, or null</returns>
         public DisplayAdapter ToDisplayAdapter()
         {
-            return
-                DisplayAdapter.GetDisplayAdapters()
-                    .FirstOrDefault(adapter => DevicePath.StartsWith("\\\\?\\" + adapter.DevicePath.Replace("\\", "#")));
+            return DisplayAdapter.GetDisplayAdapters()
+                .FirstOrDefault(
+                    adapter => DevicePath.StartsWith("\\\\?\\" + adapter.DevicePath.Replace("\\", "#"))
+                );
         }
     }
 }

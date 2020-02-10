@@ -16,9 +16,14 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.U2)] public readonly ushort VerticalSyncFrequencyDivider;
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayConfigScanLineOrdering ScanLineOrdering;
 
-        public DisplayConfigVideoSignalInfo(ulong pixelRate, DisplayConfigRational horizontalSyncFrequency,
-            DisplayConfigRational verticalSyncFrequency, DisplayConfig2DRegion activeSize,
-            DisplayConfig2DRegion totalSize, VideoSignalStandard videoStandard, ushort verticalSyncFrequencyDivider,
+        public DisplayConfigVideoSignalInfo(
+            ulong pixelRate,
+            DisplayConfigRational horizontalSyncFrequency,
+            DisplayConfigRational verticalSyncFrequency,
+            DisplayConfig2DRegion activeSize,
+            DisplayConfig2DRegion totalSize,
+            VideoSignalStandard videoStandard,
+            ushort verticalSyncFrequencyDivider,
             DisplayConfigScanLineOrdering scanLineOrdering)
         {
             PixelRate = pixelRate;
@@ -33,16 +38,23 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigVideoSignalInfo other)
         {
-            return (PixelRate == other.PixelRate) && (HorizontalSyncFrequency == other.HorizontalSyncFrequency) &&
-                   (VerticalSyncFrequency == other.VerticalSyncFrequency) && (ActiveSize == other.ActiveSize) &&
-                   (TotalSize == other.TotalSize) && (VideoStandard == other.VideoStandard) &&
-                   (VerticalSyncFrequencyDivider == other.VerticalSyncFrequencyDivider) &&
-                   (ScanLineOrdering == other.ScanLineOrdering);
+            return PixelRate == other.PixelRate &&
+                   HorizontalSyncFrequency == other.HorizontalSyncFrequency &&
+                   VerticalSyncFrequency == other.VerticalSyncFrequency &&
+                   ActiveSize == other.ActiveSize &&
+                   TotalSize == other.TotalSize &&
+                   VideoStandard == other.VideoStandard &&
+                   VerticalSyncFrequencyDivider == other.VerticalSyncFrequencyDivider &&
+                   ScanLineOrdering == other.ScanLineOrdering;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigVideoSignalInfo info && Equals(info);
         }
 
@@ -51,13 +63,14 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             unchecked
             {
                 var hashCode = PixelRate.GetHashCode();
-                hashCode = (hashCode*397) ^ HorizontalSyncFrequency.GetHashCode();
-                hashCode = (hashCode*397) ^ VerticalSyncFrequency.GetHashCode();
-                hashCode = (hashCode*397) ^ ActiveSize.GetHashCode();
-                hashCode = (hashCode*397) ^ TotalSize.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) VideoStandard;
-                hashCode = (hashCode*397) ^ VerticalSyncFrequencyDivider.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) ScanLineOrdering;
+                hashCode = (hashCode * 397) ^ HorizontalSyncFrequency.GetHashCode();
+                hashCode = (hashCode * 397) ^ VerticalSyncFrequency.GetHashCode();
+                hashCode = (hashCode * 397) ^ ActiveSize.GetHashCode();
+                hashCode = (hashCode * 397) ^ TotalSize.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) VideoStandard;
+                hashCode = (hashCode * 397) ^ VerticalSyncFrequencyDivider.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) ScanLineOrdering;
+
                 return hashCode;
             }
         }

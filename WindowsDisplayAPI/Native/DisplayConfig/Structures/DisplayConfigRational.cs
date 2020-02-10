@@ -19,17 +19,23 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public DisplayConfigRational(ulong numerator, ulong denominator, bool simplify)
         {
             var gcm = simplify & (numerator != 0) ? Euclidean(numerator, denominator) : 1;
-            Numerator = (uint) (numerator/gcm);
-            Denominator = (uint) (denominator/gcm);
+            Numerator = (uint) (numerator / gcm);
+            Denominator = (uint) (denominator / gcm);
         }
 
         private static ulong Euclidean(ulong a, ulong b)
         {
-            while ((a != 0) && (b != 0))
+            while (a != 0 && b != 0)
+            {
                 if (a > b)
+                {
                     a %= b;
+                }
                 else
+                {
                     b %= a;
+                }
+            }
 
             return a == 0 ? b : a;
         }
@@ -38,8 +44,11 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         public ulong ToValue(ulong multiplier = 1)
         {
             if (Numerator == 0)
+            {
                 return 0;
-            return Numerator*multiplier/Denominator;
+            }
+
+            return Numerator * multiplier / Denominator;
         }
 
         public bool Equals(DisplayConfigRational other)
@@ -57,7 +66,11 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigRational rational && Equals(rational);
         }
 
@@ -65,7 +78,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         {
             unchecked
             {
-                return ((int) Numerator*397) ^ (int) Denominator;
+                return ((int) Numerator * 397) ^ (int) Denominator;
             }
         }
 

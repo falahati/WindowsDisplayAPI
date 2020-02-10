@@ -40,12 +40,16 @@ namespace WindowsDisplayAPI.Native.Structures
 
         public bool Equals(PointL other)
         {
-            return (X == other.X) && (Y == other.Y);
+            return X == other.X && Y == other.Y;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is PointL point && Equals(point);
         }
 
@@ -53,13 +57,13 @@ namespace WindowsDisplayAPI.Native.Structures
         {
             unchecked
             {
-                return (X*397) ^ Y;
+                return (X * 397) ^ Y;
             }
         }
 
         public static bool operator ==(PointL left, PointL right)
         {
-            return Equals(left, right) || left.Equals(right) == true;
+            return Equals(left, right) || left.Equals(right);
         }
 
         public static bool operator !=(PointL left, PointL right)

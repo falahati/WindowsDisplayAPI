@@ -34,12 +34,16 @@ namespace WindowsDisplayAPI.Native.Structures
 
         public bool Equals(RectangleL other)
         {
-            return (Left == other.Left) && (Top == other.Top) && (Right == other.Right) && (Bottom == other.Bottom);
+            return Left == other.Left && Top == other.Top && Right == other.Right && Bottom == other.Bottom;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is RectangleL rectangle && Equals(rectangle);
         }
 
@@ -48,9 +52,10 @@ namespace WindowsDisplayAPI.Native.Structures
             unchecked
             {
                 var hashCode = Left;
-                hashCode = (hashCode*397) ^ Top;
-                hashCode = (hashCode*397) ^ Right;
-                hashCode = (hashCode*397) ^ Bottom;
+                hashCode = (hashCode * 397) ^ Top;
+                hashCode = (hashCode * 397) ^ Right;
+                hashCode = (hashCode * 397) ^ Bottom;
+
                 return hashCode;
             }
         }

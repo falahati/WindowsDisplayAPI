@@ -13,8 +13,16 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.U4)] public readonly uint SourceId;
         [MarshalAs(UnmanagedType.U4)] public readonly uint ModeInfoIndex;
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayConfigPathSourceInfoFlags StatusFlags;
-        public ushort SourceModeInfoIndex => (ushort) ((ModeInfoIndex << 16) >> 16);
-        public ushort CloneGroupId => (ushort) (ModeInfoIndex >> 16);
+
+        public ushort SourceModeInfoIndex
+        {
+            get => (ushort) ((ModeInfoIndex << 16) >> 16);
+        }
+
+        public ushort CloneGroupId
+        {
+            get => (ushort) (ModeInfoIndex >> 16);
+        }
 
         public DisplayConfigPathSourceInfo(LUID adapterId, uint sourceId, uint modeInfoIndex) : this()
         {
@@ -23,7 +31,10 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             ModeInfoIndex = modeInfoIndex;
         }
 
-        public DisplayConfigPathSourceInfo(LUID adapterId, uint sourceId, ushort sourceModeInfoIndex,
+        public DisplayConfigPathSourceInfo(
+            LUID adapterId,
+            uint sourceId,
+            ushort sourceModeInfoIndex,
             ushort cloneGroupId) : this(adapterId, sourceId, 0)
         {
             ModeInfoIndex = (uint) (sourceModeInfoIndex + (cloneGroupId << 16));

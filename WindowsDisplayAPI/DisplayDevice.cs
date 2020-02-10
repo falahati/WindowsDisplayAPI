@@ -32,8 +32,13 @@ namespace WindowsDisplayAPI
         /// <param name="adapter">The device parent DisplayAdapter</param>
         /// <param name="isAvailable">true if the device is attached, otherwise false</param>
         /// <param name="isValid">true if this instance is valid, otherwise false</param>
-        protected DisplayDevice(string devicePath, string deviceName, string deviceKey, DisplayAdapter adapter,
-            bool isAvailable, bool isValid)
+        protected DisplayDevice(
+            string devicePath,
+            string deviceName,
+            string deviceKey,
+            DisplayAdapter adapter,
+            bool isAvailable,
+            bool isValid)
             : this(devicePath, deviceName, deviceKey)
         {
             Adapter = adapter;
@@ -52,9 +57,15 @@ namespace WindowsDisplayAPI
         /// <param name="displayFullName">The device target display name</param>
         /// <param name="isAvailable">true if the device is attached, otherwise false</param>
         /// <param name="isValid">true if this instance is valid, otherwise false</param>
-        protected DisplayDevice(string devicePath, string deviceName, string deviceKey, DisplayAdapter adapter,
-            string displayName, string displayFullName,
-            bool isAvailable, bool isValid)
+        protected DisplayDevice(
+            string devicePath,
+            string deviceName,
+            string deviceKey,
+            DisplayAdapter adapter,
+            string displayName,
+            string displayFullName,
+            bool isAvailable,
+            bool isValid)
             : this(devicePath, deviceName, deviceKey, adapter, isAvailable, isValid)
         {
             DisplayName = displayName;
@@ -87,9 +98,11 @@ namespace WindowsDisplayAPI
         /// </summary>
         public virtual bool IsValid { get; }
 
-        internal static DisplayDevice FromDeviceInformation(DisplayAdapter adapter,
+        internal static DisplayDevice FromDeviceInformation(
+            DisplayAdapter adapter,
             Native.DeviceContext.Structures.DisplayDevice sourceDevice,
-            Native.DeviceContext.Structures.DisplayDevice targetDevice)
+            Native.DeviceContext.Structures.DisplayDevice targetDevice
+        )
         {
             return new DisplayDevice(
                 targetDevice.DeviceId,
@@ -102,7 +115,6 @@ namespace WindowsDisplayAPI
                 true
             );
         }
-
 
         /// <inheritdoc />
         public override string ToString()
@@ -118,16 +130,21 @@ namespace WindowsDisplayAPI
         /// <returns>An enumerable list of DisplayPossibleSettings</returns>
         public IEnumerable<DisplayPossibleSetting> GetPossibleSettings()
         {
-            if (IsValid)
+            if (!IsValid)
             {
+                yield break;
+            }
+
+            var index = -1;
+            while (true)
+            {
+                index++;
                 var deviceMode = new DeviceMode(DeviceModeFields.None);
-                for (var i = 0;
-                    DeviceContextApi.EnumDisplaySettings(DisplayName, (DisplaySettingsMode) i, ref deviceMode);
-                    i++)
+                if (!DeviceContextApi.EnumDisplaySettings(DisplayName, (DisplaySettingsMode)index, ref deviceMode))
                 {
-                    yield return new DisplayPossibleSetting(deviceMode);
-                    deviceMode = new DeviceMode(DeviceModeFields.None);
+                    break;
                 }
+                yield return new DisplayPossibleSetting(deviceMode);
             }
         }
 
@@ -137,13 +154,13 @@ namespace WindowsDisplayAPI
         /// <returns>A DisplayPossibleSetting instance</returns>
         public DisplayPossibleSetting GetPreferredSetting()
         {
-            if (IsValid)
-                return
-                    GetPossibleSettings()
-                        .OrderByDescending(setting => (int) setting.ColorDepth)
-                        .ThenByDescending(setting => (ulong) setting.Resolution.Width*(ulong) setting.Resolution.Height)
-                        .ThenByDescending(setting => setting.Frequency).FirstOrDefault();
-            return null;
+            return IsValid
+                ? GetPossibleSettings()
+                    .OrderByDescending(setting => (int) setting.ColorDepth)
+                    .ThenByDescending(setting => (ulong) setting.Resolution.Width * (ulong) setting.Resolution.Height)
+                    .ThenByDescending(setting => setting.Frequency)
+                    .FirstOrDefault()
+                : null;
         }
 
         /// <summary>
@@ -152,7 +169,8 @@ namespace WindowsDisplayAPI
         /// <returns>An instance of PathDisplaySource, or null</returns>
         public PathDisplaySource ToPathDisplaySource()
         {
-            return PathDisplaySource.GetDisplaySources()
+            return PathDisplaySource
+                .GetDisplaySources()
                 .FirstOrDefault(source => source.DisplayName.Equals(DisplayName));
         }
 
@@ -162,7 +180,8 @@ namespace WindowsDisplayAPI
         /// <returns>An instance of PathDisplayTarget, or null</returns>
         public PathDisplayTarget ToPathDisplayTarget()
         {
-            return PathDisplayTarget.GetDisplayTargets()
+            return PathDisplayTarget
+                .GetDisplayTargets()
                 .FirstOrDefault(target => target.DevicePath.Equals(DevicePath));
         }
     }

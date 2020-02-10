@@ -54,6 +54,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             {
                 // do nothing
             }
+
             // throw exception?
         }
 
@@ -62,7 +63,11 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             Id = id;
         }
 
-        public DisplayConfigDeviceInfoHeader(LUID adapterId, uint id, Type requestType, DisplayConfigDeviceInfoType request)
+        public DisplayConfigDeviceInfoHeader(
+            LUID adapterId,
+            uint id,
+            Type requestType,
+            DisplayConfigDeviceInfoType request)
             : this(adapterId, id, requestType)
         {
             Type = request;

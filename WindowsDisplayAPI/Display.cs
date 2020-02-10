@@ -15,14 +15,24 @@ namespace WindowsDisplayAPI
         /// </summary>
         /// <param name="device">The DisplayDevice instance to copy information from</param>
         protected Display(DisplayDevice device)
-            : base(device.DevicePath, device.DeviceName, device.DeviceKey, device.Adapter, device.IsAvailable, false)
+            : base(
+                device.DevicePath,
+                device.DeviceName,
+                device.DeviceKey,
+                device.Adapter,
+                device.IsAvailable,
+                false
+            )
         {
         }
 
         /// <summary>
         ///     Gets a DisplaySetting object representing the display current settings
         /// </summary>
-        public DisplaySetting CurrentSetting => new DisplaySetting(this, true);
+        public DisplaySetting CurrentSetting
+        {
+            get => new DisplaySetting(this, true);
+        }
 
         /// <inheritdoc />
         public override string DisplayFullName
@@ -30,12 +40,14 @@ namespace WindowsDisplayAPI
             get
             {
                 if (IsValid)
-                    return
-                        DisplayAdapter.GetDisplayAdapters()
-                            .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
-                            .FirstOrDefault(
-                                device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey))?
-                            .DisplayFullName;
+                {
+                    return DisplayAdapter.GetDisplayAdapters()
+                        .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
+                        .FirstOrDefault(
+                            device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                        )?.DisplayFullName;
+                }
+
                 return ToUnAttachedDisplay()?.DisplayFullName;
             }
         }
@@ -46,26 +58,34 @@ namespace WindowsDisplayAPI
             get
             {
                 if (IsValid)
+                {
                     return
                         DisplayAdapter.GetDisplayAdapters()
                             .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
                             .FirstOrDefault(
-                                device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey))?
-                            .DisplayName;
+                                device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                            )?.DisplayName;
+                }
+
                 return ToUnAttachedDisplay()?.DisplayName;
             }
         }
 
         /// <inheritdoc />
-        public override bool IsAvailable => base.IsAvailable && IsValid;
+        public override bool IsAvailable
+        {
+            get => base.IsAvailable && IsValid;
+        }
 
         /// <summary>
         ///     Gets a boolean value indicating if this display device is the Windows GDI primary device
         /// </summary>
         public bool IsGDIPrimary
-            =>
-            CurrentSetting.IsEnable && (CurrentSetting.Position.X == Point.Empty.X) &&
-            (CurrentSetting.Position.Y == Point.Empty.Y);
+        {
+            get => CurrentSetting.IsEnable &&
+                   CurrentSetting.Position.X == Point.Empty.X &&
+                   CurrentSetting.Position.Y == Point.Empty.Y;
+        }
 
 
         /// <inheritdoc />
@@ -73,19 +93,21 @@ namespace WindowsDisplayAPI
         {
             get
             {
-                return
-                    DisplayAdapter.GetDisplayAdapters()
-                        .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
-                        .Any(
-                            device =>
-                                device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey));
+                return DisplayAdapter.GetDisplayAdapters()
+                    .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
+                    .Any(
+                        device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                    );
             }
         }
 
         /// <summary>
         ///     Gets a DisplaySettings object representing this display saved settings
         /// </summary>
-        public DisplaySetting SavedSetting => new DisplaySetting(this, false);
+        public DisplaySetting SavedSetting
+        {
+            get => new DisplaySetting(this, false);
+        }
 
         /// <summary>
         ///     Returns a list of all attached displays on this machine
@@ -93,10 +115,9 @@ namespace WindowsDisplayAPI
         /// <returns>An enumerable list of Displays</returns>
         public static IEnumerable<Display> GetDisplays()
         {
-            return
-                DisplayAdapter.GetDisplayAdapters()
-                    .SelectMany(adapter => adapter.GetDisplayDevices(true))
-                    .Select(device => new Display(device));
+            return DisplayAdapter.GetDisplayAdapters()
+                .SelectMany(adapter => adapter.GetDisplayDevices(true))
+                .Select(device => new Display(device));
         }
 
         /// <inheritdoc />
@@ -143,7 +164,10 @@ namespace WindowsDisplayAPI
         public void SetSettings(DisplaySetting displaySetting, bool apply = false)
         {
             if (!IsValid)
+            {
                 throw new InvalidDisplayException(DevicePath);
+            }
+
             displaySetting.Save(this, apply);
         }
 
@@ -155,11 +179,14 @@ namespace WindowsDisplayAPI
         public UnAttachedDisplay ToUnAttachedDisplay()
         {
             if (IsValid)
+            {
                 return null;
-            return
-                UnAttachedDisplay.GetUnAttachedDisplays()
-                    .FirstOrDefault(
-                        display => display.DevicePath.Equals(DevicePath) && display.DeviceKey.Equals(DeviceKey));
+            }
+
+            return UnAttachedDisplay.GetUnAttachedDisplays()
+                .FirstOrDefault(
+                    display => display.DevicePath.Equals(DevicePath) && display.DeviceKey.Equals(DeviceKey)
+                );
         }
     }
 }

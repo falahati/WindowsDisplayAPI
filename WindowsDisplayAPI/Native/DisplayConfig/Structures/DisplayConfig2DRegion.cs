@@ -18,12 +18,16 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfig2DRegion other)
         {
-            return (Width == other.Width) && (Height == other.Height);
+            return Width == other.Width && Height == other.Height;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfig2DRegion region && Equals(region);
         }
 
@@ -31,7 +35,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         {
             unchecked
             {
-                return ((int) Width*397) ^ (int) Height;
+                return ((int) Width * 397) ^ (int) Height;
             }
         }
 

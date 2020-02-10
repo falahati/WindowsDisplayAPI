@@ -22,7 +22,11 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigTargetMode mode && Equals(mode);
         }
 

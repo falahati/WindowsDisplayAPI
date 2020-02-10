@@ -32,8 +32,8 @@ namespace WindowsDisplayAPI.DisplayConfig
             PathDisplaySource displaySource,
             Point position,
             Size resolution,
-            DisplayConfigPixelFormat pixelFormat) :
-            this(displaySource)
+            DisplayConfigPixelFormat pixelFormat
+        ) : this(displaySource)
         {
             _position = position;
             _resolution = resolution;
@@ -54,8 +54,8 @@ namespace WindowsDisplayAPI.DisplayConfig
             Point position,
             Size resolution,
             DisplayConfigPixelFormat pixelFormat,
-            uint cloneGroup) :
-            this(displaySource, cloneGroup)
+            uint cloneGroup
+        ) : this(displaySource, cloneGroup)
         {
             _position = position;
             _resolution = resolution;
@@ -71,14 +71,14 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <param name="position">The display position in desktop</param>
         /// <param name="resolution">The display resolution</param>
         /// <param name="pixelFormat">The display pixel format</param>
-        /// <param name="pathTargetInfos">An array of target informations</param>
+        /// <param name="pathTargetInfos">An array of target information</param>
         public PathInfo(
             PathDisplaySource displaySource,
             Point position,
             Size resolution,
             DisplayConfigPixelFormat pixelFormat,
-            PathTargetInfo[] pathTargetInfos) :
-            this(displaySource, position, resolution, pixelFormat)
+            PathTargetInfo[] pathTargetInfos
+        ) : this(displaySource, position, resolution, pixelFormat)
         {
             TargetsInfo = pathTargetInfos;
         }
@@ -91,7 +91,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <param name="position">The display position in desktop</param>
         /// <param name="resolution">The display resolution</param>
         /// <param name="pixelFormat">The display pixel format</param>
-        /// <param name="pathTargetInfos">An array of target informations</param>
+        /// <param name="pathTargetInfos">An array of target information</param>
         /// <param name="cloneGroup">The display clone group, only valid for virtual aware paths</param>
         public PathInfo(
             PathDisplaySource displaySource,
@@ -99,8 +99,8 @@ namespace WindowsDisplayAPI.DisplayConfig
             Size resolution,
             DisplayConfigPixelFormat pixelFormat,
             PathTargetInfo[] pathTargetInfos,
-            uint cloneGroup) :
-            this(displaySource, position, resolution, pixelFormat, cloneGroup)
+            uint cloneGroup
+        ) : this(displaySource, position, resolution, pixelFormat, cloneGroup)
         {
             TargetsInfo = pathTargetInfos;
         }
@@ -129,11 +129,11 @@ namespace WindowsDisplayAPI.DisplayConfig
         ///     Creates a new PathInfo
         /// </summary>
         /// <param name="displaySource">The display source</param>
-        /// <param name="pathTargetInfos">An array of target informations</param>
+        /// <param name="pathTargetInfos">An array of target information</param>
         public PathInfo(
             PathDisplaySource displaySource,
-            PathTargetInfo[] pathTargetInfos) :
-            this(displaySource)
+            PathTargetInfo[] pathTargetInfos
+        ) : this(displaySource)
         {
             TargetsInfo = pathTargetInfos;
         }
@@ -142,13 +142,13 @@ namespace WindowsDisplayAPI.DisplayConfig
         ///     Creates a new PathInfo
         /// </summary>
         /// <param name="displaySource">The display source</param>
-        /// <param name="pathTargetInfos">An array of target informations</param>
+        /// <param name="pathTargetInfos">An array of target information</param>
         /// <param name="cloneGroup">The display clone group, only valid for virtual aware paths</param>
         public PathInfo(
             PathDisplaySource displaySource,
             PathTargetInfo[] pathTargetInfos,
-            uint cloneGroup) :
-            this(displaySource, cloneGroup)
+            uint cloneGroup
+        ) : this(displaySource, cloneGroup)
         {
             TargetsInfo = pathTargetInfos;
         }
@@ -156,26 +156,33 @@ namespace WindowsDisplayAPI.DisplayConfig
         private PathInfo(
             DisplayConfigPathSourceInfo sourceInfo,
             DisplayConfigSourceMode? sourceMode,
-            IEnumerable
-                <
-                    Tuple
-                    <DisplayConfigPathInfoFlags, DisplayConfigPathTargetInfo, DisplayConfigTargetMode?,
-                        DisplayConfigDesktopImageInfo?>>
-                targets)
+            IEnumerable<
+                Tuple<
+                    DisplayConfigPathInfoFlags,
+                    DisplayConfigPathTargetInfo,
+                    DisplayConfigTargetMode?,
+                    DisplayConfigDesktopImageInfo?
+                >
+            > targets
+        )
         {
             DisplaySource = new PathDisplaySource(new PathDisplayAdapter(sourceInfo.AdapterId), sourceInfo.SourceId);
 
             IsInUse = sourceInfo.StatusFlags.HasFlag(DisplayConfigPathSourceInfoFlags.InUse);
             IsModeInformationAvailable = sourceMode.HasValue;
+
             if (sourceMode.HasValue)
             {
                 _resolution = new Size((int) sourceMode.Value.Width, (int) sourceMode.Value.Height);
                 _pixelFormat = sourceMode.Value.PixelFormat;
                 _position = new Point(sourceMode.Value.Position.X, sourceMode.Value.Position.Y);
             }
+
             TargetsInfo = targets.Select(t => new PathTargetInfo(t.Item1, t.Item2, t.Item3, t.Item4)).ToArray();
+
             if (TargetsInfo.Any(info => info.IsVirtualModeSupportedByPath) &&
-                (sourceInfo.CloneGroupId != DisplayConfigPathSourceInfo.InvalidCloneGroupId))
+                sourceInfo.CloneGroupId != DisplayConfigPathSourceInfo.InvalidCloneGroupId
+            )
             {
                 _cloneGroupId = sourceInfo.CloneGroupId;
                 IsCloneMember = true;
@@ -191,7 +198,12 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsCloneMember)
-                    throw new NotACloneMemberException("The display source is not part of a clone group.");
+                {
+                    throw new NotACloneMemberException(
+                        "The display source is not part of a clone group."
+                    );
+                }
+
                 return _cloneGroupId;
             }
         }
@@ -210,7 +222,10 @@ namespace WindowsDisplayAPI.DisplayConfig
         ///     Gets a boolean value indicating if this path is the primary GDI path
         /// </summary>
         /// <exception cref="MissingModeException">Source mode information is missing</exception>
-        public bool IsGDIPrimary => Position.IsEmpty;
+        public bool IsGDIPrimary
+        {
+            get => Position.IsEmpty;
+        }
 
         /// <summary>
         ///     Gets a boolean value indicating if the source is in use by at least one active path
@@ -231,11 +246,11 @@ namespace WindowsDisplayAPI.DisplayConfig
             {
                 try
                 {
-                    uint pathCount;
-                    uint modeCount;
-                    return
-                        DisplayConfigApi.GetDisplayConfigBufferSizes(QueryDeviceConfigFlags.AllPaths, out pathCount,
-                            out modeCount) == Win32Status.Success;
+                    return DisplayConfigApi.GetDisplayConfigBufferSizes(
+                            QueryDeviceConfigFlags.AllPaths,
+                            out _,
+                            out _
+                        ) == Win32Status.Success;
                 }
                 catch
                 {
@@ -253,9 +268,9 @@ namespace WindowsDisplayAPI.DisplayConfig
             {
                 try
                 {
-                    var virtualModeCallResult =
-                        PathDisplayTarget.GetDisplayTargets().FirstOrDefault()?.VirtualResolutionSupport;
-                    return virtualModeCallResult != null;
+                    return PathDisplayTarget
+                        .GetDisplayTargets()
+                        .Any(t => t.VirtualResolutionSupport);
                 }
                 catch
                 {
@@ -273,8 +288,13 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsModeInformationAvailable)
-                    throw new MissingModeException("Source mode information is missing or not available.",
-                        DisplayConfigModeInfoType.Source);
+                {
+                    throw new MissingModeException(
+                        "Source mode information is missing or not available.",
+                        DisplayConfigModeInfoType.Source
+                    );
+                }
+
                 return _pixelFormat;
             }
         }
@@ -289,8 +309,13 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsModeInformationAvailable)
-                    throw new MissingModeException("Source mode information is missing or not available.",
-                        DisplayConfigModeInfoType.Source);
+                {
+                    throw new MissingModeException(
+                        "Source mode information is missing or not available.",
+                        DisplayConfigModeInfoType.Source
+                    );
+                }
+
                 return _position;
             }
         }
@@ -304,14 +329,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsModeInformationAvailable)
-                    throw new MissingModeException("Source mode information is missing or not available.",
-                        DisplayConfigModeInfoType.Source);
+                {
+                    throw new MissingModeException(
+                        "Source mode information is missing or not available.",
+                        DisplayConfigModeInfoType.Source
+                    );
+                }
+
                 return _resolution;
             }
         }
 
         /// <summary>
-        ///     Gets the list of target informations
+        ///     Gets the list of target information
         /// </summary>
         public PathTargetInfo[] TargetsInfo { get; } = new PathTargetInfo[0];
 
@@ -323,39 +353,68 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <param name="saveToDatabase">true to save the paths to the persistence database if call succeed, otherwise false</param>
         /// <param name="forceModeEnumeration">true to force driver mode enumeration before applying the paths</param>
         /// <exception cref="PathChangeException">Error in changing paths</exception>
-        public static void ApplyPathInfos(IEnumerable<PathInfo> pathInfos, bool allowChanges = true,
-            bool saveToDatabase = false, bool forceModeEnumeration = false)
+        public static void ApplyPathInfos(
+            IEnumerable<PathInfo> pathInfos,
+            bool allowChanges = true,
+            bool saveToDatabase = false,
+            bool forceModeEnumeration = false
+        )
         {
             var pathInfosArray = pathInfos.ToArray();
+
             if (!ValidatePathInfos(pathInfosArray, allowChanges))
+            {
                 throw new PathChangeException("Invalid paths information.");
-            DisplayConfigModeInfo[] displayConfigModeInfos;
-            var displayConfigPathInfos = GetDisplayConfigPathInfos(pathInfosArray, out displayConfigModeInfos);
+            }
+
+            var displayConfigPathInfos = GetDisplayConfigPathInfos(pathInfosArray, out var displayConfigModeInfos);
+
             if (displayConfigPathInfos.Length <= 0)
+            {
                 return;
+            }
+
             var flags = displayConfigModeInfos.Length == 0
                 ? SetDisplayConfigFlags.TopologySupplied
                 : SetDisplayConfigFlags.UseSuppliedDisplayConfig;
+
             if (allowChanges)
+            {
                 flags |= displayConfigModeInfos.Length == 0
                     ? SetDisplayConfigFlags.AllowPathOrderChanges
                     : SetDisplayConfigFlags.AllowChanges;
+            }
             else if (displayConfigModeInfos.Length > 0)
+            {
                 flags |= SetDisplayConfigFlags.NoOptimization;
-            if (saveToDatabase && (displayConfigModeInfos.Length > 0))
+            }
+
+            if (saveToDatabase && displayConfigModeInfos.Length > 0)
+            {
                 flags |= SetDisplayConfigFlags.SaveToDatabase;
-            if (forceModeEnumeration && (displayConfigModeInfos.Length > 0))
+            }
+
+            if (forceModeEnumeration && displayConfigModeInfos.Length > 0)
+            {
                 flags |= SetDisplayConfigFlags.ForceModeEnumeration;
+            }
+
             var result =
                 DisplayConfigApi.SetDisplayConfig(
                     (uint) displayConfigPathInfos.Length,
                     displayConfigPathInfos,
                     (uint) displayConfigModeInfos.Length,
                     displayConfigModeInfos.Length > 0 ? displayConfigModeInfos : null,
-                    SetDisplayConfigFlags.Apply | flags);
+                    SetDisplayConfigFlags.Apply | flags
+                );
+
             if (result != Win32Status.Success)
-                throw new PathChangeException("An error occurred while applying the paths information.",
-                    new Win32Exception((int) result));
+            {
+                throw new PathChangeException(
+                    "An error occurred while applying the paths information.",
+                    new Win32Exception((int) result)
+                );
+            }
         }
 
         /// <summary>
@@ -367,14 +426,32 @@ namespace WindowsDisplayAPI.DisplayConfig
         public static void ApplyTopology(DisplayConfigTopologyId topology, bool allowPersistence = false)
         {
             if (!ValidateTopology(topology))
+            {
                 throw new PathChangeException("Invalid topology request.");
+            }
+
             var flags = (SetDisplayConfigFlags) topology;
+
             if (allowPersistence)
+            {
                 flags |= SetDisplayConfigFlags.PathPersistIfRequired;
-            var result = DisplayConfigApi.SetDisplayConfig(0, null, 0, null, SetDisplayConfigFlags.Apply | flags);
+            }
+
+            var result = DisplayConfigApi.SetDisplayConfig(
+                0,
+                null,
+                0,
+                null,
+                SetDisplayConfigFlags.Apply | flags
+            );
+
             if (result != Win32Status.Success)
-                throw new PathChangeException("An error occurred while applying the requested topology.",
-                    new Win32Exception((int) result));
+            {
+                throw new PathChangeException(
+                    "An error occurred while applying the requested topology.",
+                    new Win32Exception((int) result)
+                );
+            }
         }
 
         /// <summary>
@@ -384,12 +461,12 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>An array of PathInfos</returns>
         public static PathInfo[] GetActivePaths(bool virtualModeAware = false)
         {
-            DisplayConfigTopologyId temp;
-            return
-                GetPathInfos(
-                    virtualModeAware
-                        ? QueryDeviceConfigFlags.OnlyActivePaths | QueryDeviceConfigFlags.VirtualModeAware
-                        : QueryDeviceConfigFlags.OnlyActivePaths, out temp);
+            return GetPathInfos(
+                virtualModeAware
+                    ? QueryDeviceConfigFlags.OnlyActivePaths | QueryDeviceConfigFlags.VirtualModeAware
+                    : QueryDeviceConfigFlags.OnlyActivePaths,
+                out _
+            );
         }
 
         /// <summary>
@@ -399,12 +476,12 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>An array of PathInfos</returns>
         public static PathInfo[] GetAllPaths(bool virtualModeAware = false)
         {
-            DisplayConfigTopologyId temp;
-            return
-                GetPathInfos(
-                    virtualModeAware
-                        ? QueryDeviceConfigFlags.AllPaths | QueryDeviceConfigFlags.VirtualModeAware
-                        : QueryDeviceConfigFlags.AllPaths, out temp);
+            return GetPathInfos(
+                virtualModeAware
+                    ? QueryDeviceConfigFlags.AllPaths | QueryDeviceConfigFlags.VirtualModeAware
+                    : QueryDeviceConfigFlags.AllPaths,
+                out _
+            );
         }
 
         /// <summary>
@@ -413,8 +490,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>An array of PathInfos</returns>
         public static PathInfo[] GetCurrentDatabasePaths()
         {
-            DisplayConfigTopologyId currentDatabaseType;
-            return GetPathInfos(QueryDeviceConfigFlags.DatabaseCurrent, out currentDatabaseType);
+            return GetPathInfos(QueryDeviceConfigFlags.DatabaseCurrent, out _);
         }
 
         /// <summary>
@@ -423,8 +499,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>The topology identification</returns>
         public static DisplayConfigTopologyId GetCurrentTopology()
         {
-            DisplayConfigTopologyId currentDatabaseType;
-            GetPathInfos(QueryDeviceConfigFlags.DatabaseCurrent, out currentDatabaseType);
+            GetPathInfos(QueryDeviceConfigFlags.DatabaseCurrent, out var currentDatabaseType);
             return currentDatabaseType;
         }
 
@@ -436,24 +511,33 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>true if the provided paths are valid, otherwise false</returns>
         public static bool ValidatePathInfos(IEnumerable<PathInfo> pathInfos, bool allowChanges = true)
         {
-            DisplayConfigModeInfo[] displayConfigModeInfos;
-            var displayConfigPathInfos = GetDisplayConfigPathInfos(pathInfos, out displayConfigModeInfos);
+            var displayConfigPathInfos = GetDisplayConfigPathInfos(pathInfos, out var displayConfigModeInfos);
+
             if (displayConfigPathInfos.Length <= 0)
+            {
                 return false;
+            }
+
             var flags = displayConfigModeInfos.Length == 0
                 ? SetDisplayConfigFlags.TopologySupplied
                 : SetDisplayConfigFlags.UseSuppliedDisplayConfig;
+
             if (allowChanges)
+            {
                 flags |= displayConfigModeInfos.Length == 0
                     ? SetDisplayConfigFlags.AllowPathOrderChanges
                     : SetDisplayConfigFlags.AllowChanges;
+            }
+
             return
                 DisplayConfigApi.SetDisplayConfig(
                     (uint) displayConfigPathInfos.Length,
                     displayConfigPathInfos,
                     (uint) displayConfigModeInfos.Length,
                     displayConfigModeInfos.Length > 0 ? displayConfigModeInfos : null,
-                    SetDisplayConfigFlags.Validate | flags) == Win32Status.Success;
+                    SetDisplayConfigFlags.Validate | flags
+                ) ==
+                Win32Status.Success;
         }
 
         /// <summary>
@@ -465,85 +549,137 @@ namespace WindowsDisplayAPI.DisplayConfig
         public static bool ValidateTopology(DisplayConfigTopologyId topology)
         {
             if (topology == DisplayConfigTopologyId.None)
+            {
                 throw new ArgumentOutOfRangeException(nameof(topology), "Topology should not be empty.");
+            }
+
             var flags = (SetDisplayConfigFlags) topology;
-            return DisplayConfigApi.SetDisplayConfig(0, null, 0, null, SetDisplayConfigFlags.Validate | flags) ==
+
+            return DisplayConfigApi.SetDisplayConfig(
+                       0,
+                       null,
+                       0,
+                       null,
+                       SetDisplayConfigFlags.Validate | flags
+                   ) ==
                    Win32Status.Success;
         }
 
         private static uint AddMode(ref List<DisplayConfigModeInfo> modes, DisplayConfigModeInfo mode)
         {
-            var existingMode =
-                modes.FindIndex(
-                    info =>
-                        (info.InfoType == mode.InfoType) &&
-                        (info.AdapterId == mode.AdapterId) &&
-                        (info.Id == mode.Id));
+            var existingMode = modes.FindIndex(info =>
+                info.InfoType == mode.InfoType &&
+                info.AdapterId == mode.AdapterId &&
+                info.Id == mode.Id
+            );
+
             if (existingMode > 0)
             {
                 if (modes[existingMode] == mode)
+                {
                     return (uint) existingMode;
+                }
+
                 throw new DuplicateModeException(
-                    "Provided list of path informations, contains one or more duplicate but not identical modes.");
+                    "Provided list of path information, contains one or more duplicate but not identical modes."
+                );
             }
+
             modes.Add(mode);
+
             return (uint) modes.Count - 1;
         }
 
         // ReSharper disable once CyclomaticComplexity
-        private static DisplayConfigPathInfo[] GetDisplayConfigPathInfos(IEnumerable<PathInfo> pathInfos,
+        private static DisplayConfigPathInfo[] GetDisplayConfigPathInfos(
+            IEnumerable<PathInfo> pathInfos,
             out DisplayConfigModeInfo[] modeInfos)
         {
             var displayConfigPathInfos = new List<DisplayConfigPathInfo>();
             var displayConfigModeInfos = new List<DisplayConfigModeInfo>();
+
             foreach (var pathInfo in pathInfos)
             {
                 var sourceMode = pathInfo.GetDisplayConfigSourceMode();
                 var sourceModeIndex = sourceMode.HasValue
-                    ? AddMode(ref displayConfigModeInfos,
-                        new DisplayConfigModeInfo(pathInfo.DisplaySource.Adapter.AdapterId,
-                            pathInfo.DisplaySource.SourceId, sourceMode.Value))
+                    ? AddMode(
+                        ref displayConfigModeInfos,
+                        new DisplayConfigModeInfo(
+                            pathInfo.DisplaySource.Adapter.AdapterId,
+                            pathInfo.DisplaySource.SourceId,
+                            sourceMode.Value
+                        )
+                    )
                     : 0u;
                 var sourceInfo = pathInfo.IsCloneMember
-                    ? new DisplayConfigPathSourceInfo(pathInfo.DisplaySource.Adapter.AdapterId,
+                    ? new DisplayConfigPathSourceInfo(
+                        pathInfo.DisplaySource.Adapter.AdapterId,
                         pathInfo.DisplaySource.SourceId,
                         sourceMode.HasValue ? (ushort) sourceModeIndex : DisplayConfigSourceMode.InvalidSourceModeIndex,
-                        (ushort) pathInfo.CloneGroupId)
-                    : new DisplayConfigPathSourceInfo(pathInfo.DisplaySource.Adapter.AdapterId,
+                        (ushort) pathInfo.CloneGroupId
+                    )
+                    : new DisplayConfigPathSourceInfo(
+                        pathInfo.DisplaySource.Adapter.AdapterId,
                         pathInfo.DisplaySource.SourceId,
-                        sourceMode.HasValue ? sourceModeIndex : DisplayConfigModeInfo.InvalidModeIndex);
-                if ((pathInfo.TargetsInfo == null) || (pathInfo.TargetsInfo.Length == 0))
-                    displayConfigPathInfos.Add(new DisplayConfigPathInfo(sourceInfo, DisplayConfigPathInfoFlags.Active));
+                        sourceMode.HasValue ? sourceModeIndex : DisplayConfigModeInfo.InvalidModeIndex
+                    );
+
+                if (pathInfo.TargetsInfo == null || pathInfo.TargetsInfo.Length == 0)
+                {
+                    displayConfigPathInfos.Add(
+                        new DisplayConfigPathInfo(sourceInfo,
+                            DisplayConfigPathInfoFlags.Active
+                        )
+                    );
+                }
                 else
+                {
                     foreach (var target in pathInfo.TargetsInfo)
                     {
                         var flags = DisplayConfigPathInfoFlags.None;
+
                         if (target.IsPathActive)
+                        {
                             flags |= DisplayConfigPathInfoFlags.Active;
+                        }
+
                         if (target.IsVirtualModeSupportedByPath)
+                        {
                             flags |= DisplayConfigPathInfoFlags.SupportVirtualMode;
+                        }
+
                         var targetMode = target.GetDisplayConfigTargetMode();
                         var targetModeIndex = targetMode.HasValue
                             ? AddMode(ref displayConfigModeInfos,
-                                new DisplayConfigModeInfo(target.DisplayTarget.Adapter.AdapterId,
-                                    target.DisplayTarget.TargetId, targetMode.Value))
+                                new DisplayConfigModeInfo(
+                                    target.DisplayTarget.Adapter.AdapterId,
+                                    target.DisplayTarget.TargetId, targetMode.Value
+                                )
+                            )
                             : 0u;
                         DisplayConfigPathTargetInfo targetInfo;
+
                         if (target.IsVirtualModeSupportedByPath)
                         {
-                            sourceInfo = new DisplayConfigPathSourceInfo(pathInfo.DisplaySource.Adapter.AdapterId,
+                            sourceInfo = new DisplayConfigPathSourceInfo(
+                                pathInfo.DisplaySource.Adapter.AdapterId,
                                 pathInfo.DisplaySource.SourceId,
                                 sourceMode.HasValue
                                     ? (ushort) sourceModeIndex
                                     : DisplayConfigSourceMode.InvalidSourceModeIndex,
                                 pathInfo.IsCloneMember
                                     ? (ushort) pathInfo.CloneGroupId
-                                    : DisplayConfigPathSourceInfo.InvalidCloneGroupId);
+                                    : DisplayConfigPathSourceInfo.InvalidCloneGroupId
+                            );
                             var desktopMode = target.GetDisplayConfigDesktopImageInfo();
                             var desktopModeIndex = desktopMode.HasValue
                                 ? AddMode(ref displayConfigModeInfos,
-                                    new DisplayConfigModeInfo(target.DisplayTarget.Adapter.AdapterId,
-                                        target.DisplayTarget.TargetId, desktopMode.Value))
+                                    new DisplayConfigModeInfo(
+                                        target.DisplayTarget.Adapter.AdapterId,
+                                        target.DisplayTarget.TargetId,
+                                        desktopMode.Value
+                                    )
+                                )
                                 : 0u;
                             targetInfo = new DisplayConfigPathTargetInfo(
                                 target.DisplayTarget.Adapter.AdapterId,
@@ -561,7 +697,8 @@ namespace WindowsDisplayAPI.DisplayConfig
                                     ? new DisplayConfigRational()
                                     : new DisplayConfigRational(target.FrequencyInMillihertz, 1000, true),
                                 target.ScanLineOrdering,
-                                true);
+                                true
+                            );
                         }
                         else
                         {
@@ -576,12 +713,17 @@ namespace WindowsDisplayAPI.DisplayConfig
                                     ? new DisplayConfigRational()
                                     : new DisplayConfigRational(target.FrequencyInMillihertz, 1000, true),
                                 target.ScanLineOrdering,
-                                true);
+                                true
+                            );
                         }
+
                         displayConfigPathInfos.Add(new DisplayConfigPathInfo(sourceInfo, targetInfo, flags));
                     }
+                }
             }
+
             modeInfos = displayConfigModeInfos.ToArray();
+
             return displayConfigPathInfos.ToArray();
         }
 
@@ -590,65 +732,94 @@ namespace WindowsDisplayAPI.DisplayConfig
             DisplayConfigPathInfo[] displayPaths;
             DisplayConfigModeInfo[] displayModes;
             uint pathCount;
+
             while (true)
             {
-                uint modeCount;
                 var error = DisplayConfigApi.GetDisplayConfigBufferSizes(flags,
                     out pathCount,
-                    out modeCount);
+                    out var modeCount);
+
                 if (error != Win32Status.Success)
+                {
                     throw new Win32Exception((int) error);
+                }
 
                 displayPaths = new DisplayConfigPathInfo[pathCount];
                 displayModes = new DisplayConfigModeInfo[modeCount];
+
                 if (flags == QueryDeviceConfigFlags.DatabaseCurrent)
                 {
-                    error = DisplayConfigApi.QueryDisplayConfig(flags,
-                        ref pathCount, displayPaths, ref modeCount, displayModes, out topologyId);
+                    error = DisplayConfigApi.QueryDisplayConfig(
+                        flags,
+                        ref pathCount,
+                        displayPaths,
+                        ref modeCount,
+                        displayModes,
+                        out topologyId
+                    );
                 }
                 else
                 {
                     topologyId = DisplayConfigTopologyId.None;
-                    error = DisplayConfigApi.QueryDisplayConfig(flags,
-                        ref pathCount, displayPaths, ref modeCount, displayModes, IntPtr.Zero);
+                    error = DisplayConfigApi.QueryDisplayConfig(
+                        flags,
+                        ref pathCount,
+                        displayPaths,
+                        ref modeCount,
+                        displayModes,
+                        IntPtr.Zero
+                    );
                 }
+
                 if (error == Win32Status.Success)
+                {
                     break;
+                }
+
                 if (error != Win32Status.ErrorInsufficientBuffer)
+                {
                     throw new Win32Exception((int) error);
+                }
             }
+
             var pathInfos =
-                new Dictionary
-                    <uint,
-                        Tuple
-                        <DisplayConfigPathSourceInfo, DisplayConfigSourceMode?,
-                            List
-                            <
-                                Tuple
-                                <DisplayConfigPathInfoFlags, DisplayConfigPathTargetInfo, DisplayConfigTargetMode?,
-                                    DisplayConfigDesktopImageInfo?>>
-                        >>
-                    ();
+                new Dictionary<
+                    uint,
+                    Tuple<
+                        DisplayConfigPathSourceInfo,
+                        DisplayConfigSourceMode?,
+                        List<
+                            Tuple<
+                                DisplayConfigPathInfoFlags,
+                                DisplayConfigPathTargetInfo,
+                                DisplayConfigTargetMode?,
+                                DisplayConfigDesktopImageInfo?
+                            >
+                        >
+                    >
+                >();
 
             var sourceId = uint.MaxValue;
+
             for (var i = 0u; i < pathCount; i++)
             {
                 var displayPath = displayPaths[i];
                 DisplayConfigSourceMode? sourceMode = null;
                 var key = sourceId;
                 var isVirtualSupported = displayPath.Flags.HasFlag(DisplayConfigPathInfoFlags.SupportVirtualMode);
+
                 if (isVirtualSupported &&
-                    (displayPath.SourceInfo.SourceModeInfoIndex != DisplayConfigSourceMode.InvalidSourceModeIndex) &&
-                    (displayModes[displayPath.SourceInfo.SourceModeInfoIndex].InfoType ==
-                     DisplayConfigModeInfoType.Source))
+                    displayPath.SourceInfo.SourceModeInfoIndex != DisplayConfigSourceMode.InvalidSourceModeIndex &&
+                    displayModes[displayPath.SourceInfo.SourceModeInfoIndex].InfoType ==
+                    DisplayConfigModeInfoType.Source)
                 {
                     sourceMode = displayModes[displayPath.SourceInfo.SourceModeInfoIndex].SourceMode;
                     key = displayPath.SourceInfo.SourceModeInfoIndex;
                 }
                 else if (!isVirtualSupported &&
-                         (displayPath.SourceInfo.ModeInfoIndex != DisplayConfigModeInfo.InvalidModeIndex) &&
-                         (displayModes[displayPath.SourceInfo.ModeInfoIndex].InfoType ==
-                          DisplayConfigModeInfoType.Source))
+                         displayPath.SourceInfo.ModeInfoIndex != DisplayConfigModeInfo.InvalidModeIndex &&
+                         displayModes[displayPath.SourceInfo.ModeInfoIndex].InfoType ==
+                         DisplayConfigModeInfoType.Source)
                 {
                     sourceMode = displayModes[displayPath.SourceInfo.ModeInfoIndex].SourceMode;
                     key = displayPath.SourceInfo.ModeInfoIndex;
@@ -659,51 +830,60 @@ namespace WindowsDisplayAPI.DisplayConfig
                 }
 
                 if (!pathInfos.ContainsKey(key))
-                    pathInfos.Add(key,
-                        new Tuple
-                        <DisplayConfigPathSourceInfo, DisplayConfigSourceMode?,
-                            List
-                            <
-                                Tuple
-                                <DisplayConfigPathInfoFlags, DisplayConfigPathTargetInfo, DisplayConfigTargetMode?,
-                                    DisplayConfigDesktopImageInfo?>>
-                        >(
-                            displayPath.SourceInfo, sourceMode,
-                            new List
-                                <
-                                    Tuple
-                                    <DisplayConfigPathInfoFlags, DisplayConfigPathTargetInfo, DisplayConfigTargetMode?,
-                                        DisplayConfigDesktopImageInfo?>>
-                                ()));
+                {
+                    pathInfos.Add(
+                        key,
+                        Tuple.Create(
+                            displayPath.SourceInfo,
+                            sourceMode,
+                            new List<
+                                Tuple<
+                                    DisplayConfigPathInfoFlags,
+                                    DisplayConfigPathTargetInfo,
+                                    DisplayConfigTargetMode?,
+                                    DisplayConfigDesktopImageInfo?
+                                >
+                            >()
+                        )
+                    );
+                }
 
                 DisplayConfigTargetMode? targetMode = null;
+
                 if (isVirtualSupported &&
-                    (displayPath.TargetInfo.TargetModeInfoIndex != DisplayConfigTargetMode.InvalidTargetModeIndex) &&
-                    (displayModes[displayPath.TargetInfo.TargetModeInfoIndex].InfoType ==
-                     DisplayConfigModeInfoType.Target))
+                    displayPath.TargetInfo.TargetModeInfoIndex != DisplayConfigTargetMode.InvalidTargetModeIndex &&
+                    displayModes[displayPath.TargetInfo.TargetModeInfoIndex].InfoType == DisplayConfigModeInfoType.Target
+                )
+                {
                     targetMode = displayModes[displayPath.TargetInfo.TargetModeInfoIndex].TargetMode;
+                }
                 else if (!isVirtualSupported &&
-                         (displayPath.TargetInfo.ModeInfoIndex != DisplayConfigModeInfo.InvalidModeIndex) &&
-                         (displayModes[displayPath.TargetInfo.ModeInfoIndex].InfoType ==
-                          DisplayConfigModeInfoType.Target))
+                         displayPath.TargetInfo.ModeInfoIndex != DisplayConfigModeInfo.InvalidModeIndex &&
+                         displayModes[displayPath.TargetInfo.ModeInfoIndex].InfoType == DisplayConfigModeInfoType.Target
+                )
+                {
                     targetMode = displayModes[displayPath.TargetInfo.ModeInfoIndex].TargetMode;
+                }
 
                 DisplayConfigDesktopImageInfo? desktopImageMode = null;
+
                 if (isVirtualSupported &&
-                    (displayPath.TargetInfo.DesktopModeInfoIndex !=
-                     DisplayConfigDesktopImageInfo.InvalidDesktopImageModeIndex) &&
-                    (displayModes[displayPath.TargetInfo.DesktopModeInfoIndex].InfoType ==
-                     DisplayConfigModeInfoType.DesktopImage))
+                    displayPath.TargetInfo.DesktopModeInfoIndex !=
+                    DisplayConfigDesktopImageInfo.InvalidDesktopImageModeIndex &&
+                    displayModes[displayPath.TargetInfo.DesktopModeInfoIndex].InfoType ==
+                    DisplayConfigModeInfoType.DesktopImage)
+                {
                     desktopImageMode = displayModes[displayPath.TargetInfo.DesktopModeInfoIndex].DesktopImageInfo;
+                }
 
                 pathInfos[key].Item3.Add(
-                    new Tuple
-                    <DisplayConfigPathInfoFlags, DisplayConfigPathTargetInfo, DisplayConfigTargetMode?,
-                        DisplayConfigDesktopImageInfo?>(
-                        displayPath.Flags, displayPath.TargetInfo, targetMode, desktopImageMode));
+                    Tuple.Create(displayPath.Flags, displayPath.TargetInfo, targetMode, desktopImageMode)
+                );
             }
-            return
-                pathInfos.Select(pair => new PathInfo(pair.Value.Item1, pair.Value.Item2, pair.Value.Item3)).ToArray();
+
+            return pathInfos.Select(
+                pair => new PathInfo(pair.Value.Item1, pair.Value.Item2, pair.Value.Item3)
+            ).ToArray();
         }
 
         /// <inheritdoc />
@@ -715,8 +895,15 @@ namespace WindowsDisplayAPI.DisplayConfig
         private DisplayConfigSourceMode? GetDisplayConfigSourceMode()
         {
             if (IsModeInformationAvailable)
-                return new DisplayConfigSourceMode((uint) Resolution.Width, (uint) Resolution.Height, PixelFormat,
-                    new PointL(Position));
+            {
+                return new DisplayConfigSourceMode(
+                    (uint) Resolution.Width,
+                    (uint) Resolution.Height,
+                    PixelFormat,
+                    new PointL(Position)
+                );
+            }
+
             return null;
         }
     }

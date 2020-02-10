@@ -11,6 +11,6 @@
         SetTargetPersistence = 5,
         GetTargetBaseType = 6,
         GetSupportVirtualResolution = 7,
-        SetSupportVirtualResolution = 8,
+        SetSupportVirtualResolution = 8
     }
 }

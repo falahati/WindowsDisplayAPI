@@ -6,11 +6,20 @@ namespace WindowsDisplayAPI.Native.DeviceContext.Structures
     internal struct DisplayDevice
     {
         [MarshalAs(UnmanagedType.U4)] internal uint Size;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public readonly string DeviceName;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly string DeviceString;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public readonly string DeviceName;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public readonly string DeviceString;
+
         [MarshalAs(UnmanagedType.U4)] public readonly DisplayDeviceStateFlags StateFlags;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly string DeviceId;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly string DeviceKey;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public readonly string DeviceId;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public readonly string DeviceKey;
 
         public static DisplayDevice Initialize()
         {

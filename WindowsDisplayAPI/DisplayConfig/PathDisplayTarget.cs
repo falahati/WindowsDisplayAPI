@@ -48,12 +48,18 @@ namespace WindowsDisplayAPI.DisplayConfig
             set
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetPersistence = new DisplayConfigSetTargetPersistence(Adapter.AdapterId, TargetId, value);
                 var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref targetPersistence);
+
                 if (result != Win32Status.Success)
+                {
                     throw new Win32Exception((int) result);
+                }
             }
         }
 
@@ -69,12 +75,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetName = new DisplayConfigTargetDeviceName(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetName);
+
                 if (result == Win32Status.Success)
+                {
                     return (int) targetName.ConnectorInstance;
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -89,12 +102,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetName = new DisplayConfigTargetDeviceName(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetName);
+
                 if (result == Win32Status.Success)
+                {
                     return targetName.MonitorDevicePath;
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -111,9 +131,10 @@ namespace WindowsDisplayAPI.DisplayConfig
             {
                 var edidCode = EDIDManufactureId;
                 edidCode = ((edidCode & 0xff00) >> 8) | ((edidCode & 0x00ff) << 8);
-                var byte1 = (byte) 'A' + ((edidCode >> 0) & 0x1f) - 1;
+                var byte1 = (byte) 'A' + (edidCode & 0x1f) - 1;
                 var byte2 = (byte) 'A' + ((edidCode >> 5) & 0x1f) - 1;
                 var byte3 = (byte) 'A' + ((edidCode >> 10) & 0x1f) - 1;
+
                 return $"{Convert.ToChar(byte3)}{Convert.ToChar(byte2)}{Convert.ToChar(byte1)}";
             }
         }
@@ -129,16 +150,24 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetName = new DisplayConfigTargetDeviceName(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetName);
+
                 if (result == Win32Status.Success)
                 {
                     if (targetName.Flags.HasFlag(DisplayConfigTargetDeviceNameFlags.EDIDIdsValid))
+                    {
                         return targetName.EDIDManufactureId;
+                    }
+
                     throw new InvalidEDIDInformation("EDID does not contain necessary information.");
                 }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -154,16 +183,24 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetName = new DisplayConfigTargetDeviceName(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetName);
+
                 if (result == Win32Status.Success)
                 {
                     if (targetName.Flags.HasFlag(DisplayConfigTargetDeviceNameFlags.EDIDIdsValid))
+                    {
                         return targetName.EDIDProductCodeId;
+                    }
+
                     throw new InvalidEDIDInformation("EDID does not contain necessary information.");
                 }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -178,12 +215,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetName = new DisplayConfigTargetDeviceName(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetName);
+
                 if (result == Win32Status.Success)
+                {
                     return targetName.MonitorFriendlyDeviceName;
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -203,12 +247,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetPreferredMode = new DisplayConfigTargetPreferredMode(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetPreferredMode);
+
                 if (result == Win32Status.Success)
+                {
                     return new Size((int) targetPreferredMode.Width, (int) targetPreferredMode.Height);
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -223,12 +274,19 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetPreferredMode = new DisplayConfigTargetPreferredMode(Adapter.AdapterId, TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetPreferredMode);
+
                 if (result == Win32Status.Success)
+                {
                     return new PathTargetSignalInfo(targetPreferredMode.TargetMode.TargetVideoSignalInfo);
+                }
+
                 throw new Win32Exception((int) result);
             }
         }
@@ -248,33 +306,54 @@ namespace WindowsDisplayAPI.DisplayConfig
             get
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetSupportVirtualResolution = new DisplayConfigSupportVirtualResolution(Adapter.AdapterId,
                     TargetId);
                 var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref targetSupportVirtualResolution);
+
                 if (result == Win32Status.Success)
+                {
                     return !targetSupportVirtualResolution.DisableMonitorVirtualResolution;
+                }
+
                 throw new Win32Exception((int) result);
             }
             set
             {
                 if (!IsAvailable)
+                {
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
+                }
+
                 var targetSupportVirtualResolution = new DisplayConfigSupportVirtualResolution(Adapter.AdapterId,
                     TargetId, !value);
                 var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref targetSupportVirtualResolution);
+
                 if (result != Win32Status.Success)
+                {
                     throw new Win32Exception((int) result);
+                }
             }
         }
 
         /// <inheritdoc />
         public bool Equals(PathDisplayTarget other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Adapter == other.Adapter && TargetId == other.TargetId;
         }
 
@@ -285,14 +364,21 @@ namespace WindowsDisplayAPI.DisplayConfig
         public static PathDisplayTarget[] GetDisplayTargets()
         {
             var targets = new Dictionary<Tuple<LUID, uint>, PathDisplayTarget>();
+
             foreach (var pathInfo in PathInfo.GetAllPaths())
-                foreach (var pathTargetInfo in pathInfo.TargetsInfo.Where(info => info.DisplayTarget.IsAvailable))
+            foreach (var pathTargetInfo in pathInfo.TargetsInfo.Where(info => info.DisplayTarget.IsAvailable))
+            {
+                var key = Tuple.Create(
+                    pathTargetInfo.DisplayTarget.Adapter.AdapterId,
+                    pathTargetInfo.DisplayTarget.TargetId
+                );
+
+                if (!pathTargetInfo.DisplayTarget.Adapter.IsInvalid && !targets.ContainsKey(key))
                 {
-                    var key = new Tuple<LUID, uint>(pathTargetInfo.DisplayTarget.Adapter.AdapterId,
-                        pathTargetInfo.DisplayTarget.TargetId);
-                    if (!pathTargetInfo.DisplayTarget.Adapter.IsInvalid && !targets.ContainsKey(key))
-                        targets.Add(key, pathTargetInfo.DisplayTarget);
+                    targets.Add(key, pathTargetInfo.DisplayTarget);
                 }
+            }
+
             return targets.Values.ToArray();
         }
 
@@ -321,10 +407,17 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((PathDisplayTarget) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((PathDisplayTarget) obj);
         }
 
         /// <inheritdoc />
@@ -332,7 +425,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         {
             unchecked
             {
-                return ((Adapter != null ? Adapter.GetHashCode() : 0)*397) ^ (int) TargetId;
+                return ((Adapter != null ? Adapter.GetHashCode() : 0) * 397) ^ (int) TargetId;
             }
         }
 
@@ -349,8 +442,10 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <returns>A RegistryKey instance for successful call, otherwise null</returns>
         public Microsoft.Win32.RegistryKey OpenDevicePnPKey()
         {
-            if (string.IsNullOrWhiteSpace(DevicePath))
+            if (string.IsNullOrWhiteSpace(DevicePath)) {
                 return null;
+            }
+
             var path = DevicePath;
             if (path.StartsWith("\\\\?\\"))
             {
@@ -358,12 +453,16 @@ namespace WindowsDisplayAPI.DisplayConfig
                 if (path.EndsWith("}"))
                 {
                     var guidIndex = path.LastIndexOf("{", StringComparison.InvariantCulture);
-                    if (guidIndex > 0)
+                    if (guidIndex > 0) {
                         path = path.Substring(0, guidIndex);
+                    }
                 }
             }
-            return Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Enum\\" + path,
-                Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree);
+
+            return Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                "SYSTEM\\CurrentControlSet\\Enum\\" + path,
+                Microsoft.Win32.RegistryKeyPermissionCheck.ReadSubTree
+            );
         }
 #endif
 

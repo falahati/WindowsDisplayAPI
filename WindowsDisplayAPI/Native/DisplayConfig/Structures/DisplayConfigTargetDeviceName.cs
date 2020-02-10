@@ -14,8 +14,12 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.U2)] public readonly ushort EDIDManufactureId;
         [MarshalAs(UnmanagedType.U2)] public readonly ushort EDIDProductCodeId;
         [MarshalAs(UnmanagedType.U4)] public readonly uint ConnectorInstance;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)] public readonly string MonitorFriendlyDeviceName;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly string MonitorDevicePath;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public readonly string MonitorFriendlyDeviceName;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public readonly string MonitorDevicePath;
 
 
         public DisplayConfigTargetDeviceName(LUID adapter, uint targetId) : this()

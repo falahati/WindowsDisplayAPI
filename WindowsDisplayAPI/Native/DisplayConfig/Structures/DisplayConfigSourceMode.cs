@@ -24,13 +24,19 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
 
         public bool Equals(DisplayConfigSourceMode other)
         {
-            return (Width == other.Width) && (Height == other.Height) && (PixelFormat == other.PixelFormat) &&
-                   (Position == other.Position);
+            return Width == other.Width &&
+                   Height == other.Height &&
+                   PixelFormat == other.PixelFormat &&
+                   Position == other.Position;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is DisplayConfigSourceMode mode && Equals(mode);
         }
 
@@ -39,9 +45,10 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
             unchecked
             {
                 var hashCode = (int) Width;
-                hashCode = (hashCode*397) ^ (int) Height;
-                hashCode = (hashCode*397) ^ (int) PixelFormat;
-                hashCode = (hashCode*397) ^ Position.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) Height;
+                hashCode = (hashCode * 397) ^ (int) PixelFormat;
+                hashCode = (hashCode * 397) ^ Position.GetHashCode();
+
                 return hashCode;
             }
         }

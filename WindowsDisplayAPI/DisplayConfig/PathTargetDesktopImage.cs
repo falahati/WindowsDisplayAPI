@@ -56,9 +56,18 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <inheritdoc />
         public bool Equals(PathTargetDesktopImage other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return ImageClip == other.ImageClip && ImageRegion == other.ImageRegion &&
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return ImageClip == other.ImageClip &&
+                   ImageRegion == other.ImageRegion &&
                    MonitorSurfaceSize == other.MonitorSurfaceSize;
         }
 
@@ -67,7 +76,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are equal, otherwise false</returns>
+        /// <returns>true if both instances are equal, otherwise false</returns>
         public static bool operator ==(PathTargetDesktopImage left, PathTargetDesktopImage right)
         {
             return Equals(left, right) || left?.Equals(right) == true;
@@ -78,7 +87,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are not equal, otherwise false</returns>
+        /// <returns>true if both instances are not equal, otherwise false</returns>
         public static bool operator !=(PathTargetDesktopImage left, PathTargetDesktopImage right)
         {
             return !(left == right);
@@ -87,10 +96,17 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((PathTargetDesktopImage) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            return obj.GetType() == GetType() && Equals((PathTargetDesktopImage) obj);
         }
 
         /// <inheritdoc />
@@ -99,8 +115,9 @@ namespace WindowsDisplayAPI.DisplayConfig
             unchecked
             {
                 var hashCode = ImageClip.GetHashCode();
-                hashCode = (hashCode*397) ^ ImageRegion.GetHashCode();
-                hashCode = (hashCode*397) ^ MonitorSurfaceSize.GetHashCode();
+                hashCode = (hashCode * 397) ^ ImageRegion.GetHashCode();
+                hashCode = (hashCode * 397) ^ MonitorSurfaceSize.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -113,8 +130,11 @@ namespace WindowsDisplayAPI.DisplayConfig
 
         internal DisplayConfigDesktopImageInfo GetDisplayConfigDesktopImageInfo()
         {
-            return new DisplayConfigDesktopImageInfo(new PointL(MonitorSurfaceSize), new RectangleL(ImageRegion),
-                new RectangleL(ImageClip));
+            return new DisplayConfigDesktopImageInfo(
+                new PointL(MonitorSurfaceSize),
+                new RectangleL(ImageRegion),
+                new RectangleL(ImageClip)
+            );
         }
     }
 }

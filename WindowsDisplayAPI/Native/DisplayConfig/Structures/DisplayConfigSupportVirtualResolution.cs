@@ -11,7 +11,10 @@ namespace WindowsDisplayAPI.Native.DisplayConfig.Structures
         [MarshalAs(UnmanagedType.Struct)] private readonly DisplayConfigDeviceInfoHeader _Header;
         [MarshalAs(UnmanagedType.U4)] private readonly int _DisableMonitorVirtualResolution;
 
-        public bool DisableMonitorVirtualResolution => _DisableMonitorVirtualResolution > 0;
+        public bool DisableMonitorVirtualResolution
+        {
+            get => _DisableMonitorVirtualResolution > 0;
+        }
 
         public DisplayConfigSupportVirtualResolution(LUID adapter, uint targetId) : this()
         {

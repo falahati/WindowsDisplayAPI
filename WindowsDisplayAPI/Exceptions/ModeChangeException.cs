@@ -14,8 +14,11 @@ namespace WindowsDisplayAPI.Exceptions
         /// <param name="device">The device responsible for the mode change</param>
         /// <param name="errorCode">The error code</param>
         /// <param name="message">The human readable message of the exception</param>
-        public ModeChangeException(string message, DisplayDevice device, ChangeDisplaySettingsExResults errorCode)
-            : base(message)
+        public ModeChangeException(
+            string message,
+            DisplayDevice device,
+            ChangeDisplaySettingsExResults errorCode
+        ) : base(message)
         {
             Device = device;
             ErrorCode = errorCode;
