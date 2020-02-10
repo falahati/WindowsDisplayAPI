@@ -125,34 +125,25 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <summary>
         ///     Gets and sets the current source DPI scaling
         /// </summary>
-        public DisplayConfigSourceDPIScale CurrentScaling
+        public DisplayConfigSourceDPIScale CurrentDPIScale
         {
             get
             {
-                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
-                    .Cast<DisplayConfigSourceDPIScale>()
-                    .OrderBy(scaling => (int) scaling)
-                    .ToArray();
-
-                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
-                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                var dpiScale = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScale);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int)result);
 
-                var currentScaleIndex = Math.Abs(dpiScaling.MinimumScaleSteps) + dpiScaling.CurrentScaleSteps;
+                var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + dpiScale.CurrentScaleSteps;
 
-                return scales[currentScaleIndex];
+                return DPIScales[currentScaleIndex];
             }
             set
             {
-                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
-                    .Cast<DisplayConfigSourceDPIScale>()
-                    .OrderBy(scaling => (int)scaling)
-                    .ToArray();
-                var currentScaleStep = Array.IndexOf(scales, value) - Array.IndexOf(scales, RecommendedScaling);
+                var currentScaleStep = Array.IndexOf(DPIScales, value) - Array.IndexOf(DPIScales, RecommendedDPIScale);
 
-                var dpiScaling = new DisplayConfigSetSourceDPIScale(Adapter.AdapterId, SourceId, currentScaleStep);
-                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref dpiScaling);
+                var dpiScale = new DisplayConfigSetSourceDPIScale(Adapter.AdapterId, SourceId, currentScaleStep);
+                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref dpiScale);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int)result);
             }
@@ -161,44 +152,39 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// <summary>
         ///     Gets the recommended DPI scaling for this source
         /// </summary>
-        public DisplayConfigSourceDPIScale RecommendedScaling
+        public DisplayConfigSourceDPIScale RecommendedDPIScale
         {
             get
             {
-                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
-                    .Cast<DisplayConfigSourceDPIScale>()
-                    .OrderBy(scaling => (int)scaling)
-                    .ToArray();
-
-                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
-                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                var dpiScale = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScale);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int)result);
 
-                return scales[Math.Abs(dpiScaling.MinimumScaleSteps)];
+                return DPIScales[Math.Abs(dpiScale.MinimumScaleSteps)];
             }
         }
+
+        private static readonly DisplayConfigSourceDPIScale[] DPIScales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
+            .Cast<DisplayConfigSourceDPIScale>()
+            .OrderBy(scaling => (int) scaling)
+            .ToArray();
 
         /// <summary>
         ///     Gets the maximum DPI scaling for this source
         /// </summary>
-        public DisplayConfigSourceDPIScale MaximumScaling
+        public DisplayConfigSourceDPIScale MaximumDPIScale
         {
             get
             {
-                var scales = Enum.GetValues(typeof(DisplayConfigSourceDPIScale))
-                    .Cast<DisplayConfigSourceDPIScale>()
-                    .OrderBy(scaling => (int)scaling)
-                    .ToArray();
-
-                var dpiScaling = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
-                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScaling);
+                var dpiScale = new DisplayConfigGetSourceDPIScale(Adapter.AdapterId, SourceId);
+                var result = DisplayConfigApi.DisplayConfigGetDeviceInfo(ref dpiScale);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int)result);
 
-                var currentScaleIndex = Math.Abs(dpiScaling.MinimumScaleSteps) + dpiScaling.MaximumScaleSteps;
+                var currentScaleIndex = Math.Abs(dpiScale.MinimumScaleSteps) + dpiScale.MaximumScaleSteps;
 
-                return scales[currentScaleIndex];
+                return DPIScales[currentScaleIndex];
             }
         }
 

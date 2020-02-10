@@ -32,8 +32,7 @@ namespace WindowsDisplayAPI
                         .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
                         .Any(
                             device =>
-                                device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey) &&
-                                !device.IsAvailable);
+                                device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey));
             }
         }
 
@@ -46,7 +45,6 @@ namespace WindowsDisplayAPI
             return
                 DisplayAdapter.GetDisplayAdapters()
                     .SelectMany(adapter => adapter.GetDisplayDevices(false))
-                    .Where(device => !device.IsAvailable)
                     .Select(device => new UnAttachedDisplay(device));
         }
 

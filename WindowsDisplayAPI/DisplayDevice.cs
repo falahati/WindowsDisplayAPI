@@ -91,9 +91,16 @@ namespace WindowsDisplayAPI
             Native.DeviceContext.Structures.DisplayDevice sourceDevice,
             Native.DeviceContext.Structures.DisplayDevice targetDevice)
         {
-            return new DisplayDevice(targetDevice.DeviceId, targetDevice.DeviceString, targetDevice.DeviceKey, adapter,
-                sourceDevice.DeviceName, targetDevice.DeviceName,
-                targetDevice.StateFlags.HasFlag(DisplayDeviceStateFlags.AttachedToDesktop), true);
+            return new DisplayDevice(
+                targetDevice.DeviceId,
+                targetDevice.DeviceString,
+                targetDevice.DeviceKey,
+                adapter,
+                sourceDevice.DeviceName,
+                targetDevice.DeviceName,
+                targetDevice.StateFlags.HasFlag(DisplayDeviceStateFlags.AttachedToDesktop),
+                true
+            );
         }
 
 
@@ -128,7 +135,7 @@ namespace WindowsDisplayAPI
         ///     Returns the best possible display setting for this display device
         /// </summary>
         /// <returns>A DisplayPossibleSetting instance</returns>
-        public DisplayPossibleSetting GetPreferedSetting()
+        public DisplayPossibleSetting GetPreferredSetting()
         {
             if (IsValid)
                 return
