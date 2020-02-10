@@ -152,7 +152,7 @@ namespace WindowsDisplayAPI.DisplayConfig
                 var currentScaleStep = Array.IndexOf(scales, value) - Array.IndexOf(scales, RecommendedScaling);
 
                 var dpiScaling = new DisplayConfigSetSourceDPIScale(Adapter.AdapterId, SourceId, currentScaleStep);
-                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(dpiScaling);
+                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref dpiScaling);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int)result);
             }

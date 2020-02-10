@@ -6,7 +6,7 @@ namespace WindowsDisplayAPI.Native.DisplayConfig
 {
     public enum DisplayConfigSourceDPIScale : uint
     {
-        Identical = 100,
+        Identity = 100,
         Scale125Percent = 125,
         Scale150Percent = 150,
         Scale175Percent = 175,

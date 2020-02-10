@@ -51,7 +51,7 @@ namespace WindowsDisplayAPI.DisplayConfig
                     throw new TargetNotAvailableException("Extra information about the target is not available.",
                         Adapter.AdapterId, TargetId);
                 var targetPersistence = new DisplayConfigSetTargetPersistence(Adapter.AdapterId, TargetId, value);
-                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(targetPersistence);
+                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref targetPersistence);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int) result);
             }
@@ -264,7 +264,7 @@ namespace WindowsDisplayAPI.DisplayConfig
                         Adapter.AdapterId, TargetId);
                 var targetSupportVirtualResolution = new DisplayConfigSupportVirtualResolution(Adapter.AdapterId,
                     TargetId, !value);
-                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(targetSupportVirtualResolution);
+                var result = DisplayConfigApi.DisplayConfigSetDeviceInfo(ref targetSupportVirtualResolution);
                 if (result != Win32Status.Success)
                     throw new Win32Exception((int) result);
             }
@@ -301,7 +301,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are equal, otherwise false</returns>
+        /// <returns>true if both instances are equal, otherwise false</returns>
         public static bool operator ==(PathDisplayTarget left, PathDisplayTarget right)
         {
             return Equals(left, right) || left?.Equals(right) == true;
@@ -312,7 +312,7 @@ namespace WindowsDisplayAPI.DisplayConfig
         /// </summary>
         /// <param name="left">The first instance</param>
         /// <param name="right">The second instance</param>
-        /// <returns>true if both instaces are not equal, otherwise false</returns>
+        /// <returns>true if both instances are not equal, otherwise false</returns>
         public static bool operator !=(PathDisplayTarget left, PathDisplayTarget right)
         {
             return !(left == right);

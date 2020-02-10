@@ -44,17 +44,17 @@ namespace WindowsDisplayAPI.Native
 
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigSetDeviceInfo(
-            DisplayConfigSetTargetPersistence targetPersistence
+            ref DisplayConfigSetTargetPersistence targetPersistence
         );
 
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigSetDeviceInfo(
-            DisplayConfigSupportVirtualResolution targetSupportVirtualResolution
+            ref DisplayConfigSupportVirtualResolution targetSupportVirtualResolution
         );
 
         [DllImport("user32")]
         public static extern Win32Status DisplayConfigSetDeviceInfo(
-            DisplayConfigSetSourceDPIScale setSourceDpiScale
+            ref DisplayConfigSetSourceDPIScale setSourceDpiScale
         );
 
         [DllImport("user32")]
