@@ -112,8 +112,9 @@ namespace WindowsDisplaySample
                         foreach (var display in displays)
                         {
                             var validSetting = display.GetPreferredSetting();
-                            display.Enable(new DisplaySetting(validSetting, new Point(startPosition, 0)), true);
+                            var placedSettings = new DisplaySetting(validSetting, new Point(startPosition, 0));
                             startPosition += validSetting.Resolution.Width;
+                            display.Enable(placedSettings, true);
                         }
 
                         DisplaySetting.ApplySavedSettings();
