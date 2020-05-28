@@ -17,6 +17,14 @@ namespace WindowsDisplayAPI.Exceptions
         }
 
         /// <summary>
+        ///     Creates a new InvalidDisplayException
+        /// </summary>
+        public InvalidDisplayException() : this(null)
+        {
+
+        }
+
+        /// <summary>
         ///     Gets the path of the display device
         /// </summary>
         public string DisplayPath { get; }

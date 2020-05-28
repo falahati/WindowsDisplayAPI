@@ -467,9 +467,9 @@ namespace WindowsDisplayAPI.DisplayConfig
 #endif
 
         /// <summary>
-        ///     Returns the corresponding DisplayDevice instance
+        ///     Returns the corresponding <see cref="DisplayDevice"/> instance
         /// </summary>
-        /// <returns>An instance of DisplayDevice, or null</returns>
+        /// <returns>An instance of <see cref="DisplayDevice"/>, or null</returns>
         public DisplayDevice ToDisplayDevice()
         {
             return

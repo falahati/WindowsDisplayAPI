@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA2101: Specify marshaling for P/Invoke string arguments
+dotnet_diagnostic.CA2101.severity = suggestion

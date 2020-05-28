@@ -34,11 +34,11 @@ namespace WindowsDisplaySample
                         ConsoleNavigation.PrintObject(
                             Display.GetDisplays().ToArray(),
                             display => ConsoleNavigation.PrintObject(
-                                display.CurrentSetting,
+                                display.DisplayScreen.CurrentSetting,
                                 () =>
                                 {
                                     ConsoleNavigation.PrintObject(
-                                        display.GetPossibleSettings()
+                                        display.DisplayScreen.GetPossibleSettings()
                                             .OrderByDescending(
                                                 setting => (ulong) setting.Resolution.Height *
                                                            (ulong) setting.Resolution.Width)
@@ -46,7 +46,7 @@ namespace WindowsDisplaySample
                                             .ToArray(),
                                         setting =>
                                         {
-                                            display.SetSettings(new DisplaySetting(setting), true);
+                                            display.DisplayScreen.SetSettings(new DisplaySetting(setting), true);
                                         },
                                         "Display.GetValidSettings()",
                                         "Select a display setting to apply and enable."
@@ -66,7 +66,7 @@ namespace WindowsDisplaySample
                             display =>
                             {
                                 ConsoleNavigation.PrintObject(
-                                    display.GetPossibleSettings()
+                                    display.DisplayScreen.GetPossibleSettings()
                                         .OrderByDescending(
                                             setting => (ulong) setting.Resolution.Height *
                                                        (ulong) setting.Resolution.Width)
@@ -74,7 +74,7 @@ namespace WindowsDisplaySample
                                         .ToArray(),
                                     setting =>
                                     {
-                                        display.Enable(new DisplaySetting(setting));
+                                        display.DisplayScreen.Enable(new DisplaySetting(setting));
                                         DisplaySetting.ApplySavedSettings();
                                     },
                                     "Display.GetValidSettings()",
@@ -90,9 +90,9 @@ namespace WindowsDisplaySample
                     {
                         var displays = Display.GetDisplays().ToArray();
 
-                        foreach (var display in displays.Where(display => !display.IsGDIPrimary))
+                        foreach (var display in displays.Where(display => !display.DisplayScreen.IsPrimary))
                         {
-                            display.Disable(false);
+                            display.DisplayScreen.Disable(false);
                         }
 
                         DisplaySetting.ApplySavedSettings();
@@ -104,17 +104,18 @@ namespace WindowsDisplaySample
                     {
                         var startPosition = Display.GetDisplays()
                             .Max(
-                                display => display.CurrentSetting.Position.X + display.CurrentSetting.Resolution.Width
+                                display => display.DisplayScreen.CurrentSetting.Position.X +
+                                           display.DisplayScreen.CurrentSetting.Resolution.Width
                             );
 
                         var displays = UnAttachedDisplay.GetUnAttachedDisplays().ToArray();
 
                         foreach (var display in displays)
                         {
-                            var validSetting = display.GetPreferredSetting();
+                            var validSetting = display.DisplayScreen.GetPreferredSetting();
                             var placedSettings = new DisplaySetting(validSetting, new Point(startPosition, 0));
                             startPosition += validSetting.Resolution.Width;
-                            display.Enable(placedSettings, true);
+                            display.DisplayScreen.Enable(placedSettings, true);
                         }
 
                         DisplaySetting.ApplySavedSettings();

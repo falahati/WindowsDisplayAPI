@@ -70,6 +70,14 @@ namespace WindowsDisplayAPI.DisplayConfig
         }
 
         /// <summary>
+        ///     Returns the corresponding <see cref="DisplayScreen"/> instance.
+        /// </summary>
+        public DisplayScreen ToScreen()
+        {
+            return DisplayScreen.GetScreens().FirstOrDefault(info => info.ScreenName.Equals(DisplayName));
+        }
+
+        /// <summary>
         ///     Gets the display name
         /// </summary>
         /// <exception cref="Win32Exception">Error code can be retrieved from Win32Exception.NativeErrorCode property</exception>
@@ -225,17 +233,6 @@ namespace WindowsDisplayAPI.DisplayConfig
         public override string ToString()
         {
             return DisplayName;
-        }
-
-        /// <summary>
-        ///     Returns the corresponding DisplayDevice instances
-        /// </summary>
-        /// <returns>An enumerable list of DisplayDevices</returns>
-        public IEnumerable<DisplayDevice> ToDisplayDevices()
-        {
-            return DisplayAdapter.GetDisplayAdapters()
-                .SelectMany(adapter => adapter.GetDisplayDevices())
-                .Where(device => device.DisplayName.Equals(DisplayName));
         }
     }
 }

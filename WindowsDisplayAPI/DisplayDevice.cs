@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using WindowsDisplayAPI.DisplayConfig;
-using WindowsDisplayAPI.Native;
 using WindowsDisplayAPI.Native.DeviceContext;
-using WindowsDisplayAPI.Native.DeviceContext.Structures;
 
 namespace WindowsDisplayAPI
 {
@@ -21,6 +18,14 @@ namespace WindowsDisplayAPI
         protected DisplayDevice(string devicePath, string deviceName, string deviceKey)
             : base(devicePath, deviceName, deviceKey)
         {
+        }
+
+        /// <summary>
+        ///     Gets the corresponding <see cref="DisplayScreen" /> instance.
+        /// </summary>
+        public DisplayScreen DisplayScreen
+        {
+            get => DisplayScreen.GetScreens().FirstOrDefault(info => info.ScreenName.Equals(ScreenName));
         }
 
         /// <summary>
@@ -68,8 +73,8 @@ namespace WindowsDisplayAPI
             bool isValid)
             : this(devicePath, deviceName, deviceKey, adapter, isAvailable, isValid)
         {
-            DisplayName = displayName;
-            DisplayFullName = displayFullName;
+            ScreenName = displayName;
+            DisplayName = displayFullName;
         }
 
         /// <summary>
@@ -80,12 +85,12 @@ namespace WindowsDisplayAPI
         /// <summary>
         ///     Gets the display device target name
         /// </summary>
-        public virtual string DisplayFullName { get; }
+        public virtual string DisplayName { get; }
 
         /// <summary>
         ///     Gets the display device source name
         /// </summary>
-        public virtual string DisplayName { get; }
+        public virtual string ScreenName { get; }
 
         /// <summary>
         ///     Gets a boolean value indicating if this display device is currently attached
@@ -120,58 +125,8 @@ namespace WindowsDisplayAPI
         public override string ToString()
         {
             return string.IsNullOrWhiteSpace(DeviceName)
-                ? $"{GetType().Name}: {DisplayFullName} - IsAvailable: {IsAvailable}"
-                : $"{GetType().Name}: {DisplayFullName} ({DeviceName}) - IsAvailable: {IsAvailable}";
-        }
-
-        /// <summary>
-        ///     Returns a list of possible display setting for this display device
-        /// </summary>
-        /// <returns>An enumerable list of DisplayPossibleSettings</returns>
-        public IEnumerable<DisplayPossibleSetting> GetPossibleSettings()
-        {
-            if (!IsValid)
-            {
-                yield break;
-            }
-
-            var index = -1;
-            while (true)
-            {
-                index++;
-                var deviceMode = new DeviceMode(DeviceModeFields.None);
-                if (!DeviceContextApi.EnumDisplaySettings(DisplayName, (DisplaySettingsMode)index, ref deviceMode))
-                {
-                    break;
-                }
-                yield return new DisplayPossibleSetting(deviceMode);
-            }
-        }
-
-        /// <summary>
-        ///     Returns the best possible display setting for this display device
-        /// </summary>
-        /// <returns>A DisplayPossibleSetting instance</returns>
-        public DisplayPossibleSetting GetPreferredSetting()
-        {
-            return IsValid
-                ? GetPossibleSettings()
-                    .OrderByDescending(setting => (int) setting.ColorDepth)
-                    .ThenByDescending(setting => (ulong) setting.Resolution.Width * (ulong) setting.Resolution.Height)
-                    .ThenByDescending(setting => setting.Frequency)
-                    .FirstOrDefault()
-                : null;
-        }
-
-        /// <summary>
-        ///     Returns the corresponding PathDisplaySource instance
-        /// </summary>
-        /// <returns>An instance of PathDisplaySource, or null</returns>
-        public PathDisplaySource ToPathDisplaySource()
-        {
-            return PathDisplaySource
-                .GetDisplaySources()
-                .FirstOrDefault(source => source.DisplayName.Equals(DisplayName));
+                ? $"{GetType().Name}: {DisplayName} - IsAvailable: {IsAvailable}"
+                : $"{GetType().Name}: {DisplayName} ({DeviceName}) - IsAvailable: {IsAvailable}";
         }
 
         /// <summary>

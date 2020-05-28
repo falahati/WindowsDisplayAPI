@@ -35,6 +35,16 @@ namespace WindowsDisplayAPI.Native.DeviceContext
 
         DisplayFrequency = 0x400000,
 
-        DisplayFixedOutput = 0x20000000
+        DisplayFixedOutput = 0x20000000,
+
+        AllDisplay = Position |
+                     DisplayOrientation |
+                     YResolution |
+                     BitsPerPixel |
+                     PelsWidth |
+                     PelsHeight |
+                     DisplayFlags |
+                     DisplayFrequency |
+                     DisplayFixedOutput,
     }
 }

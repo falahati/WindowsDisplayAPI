@@ -16,7 +16,7 @@ namespace WindowsDisplayAPI
     public class DisplaySetting : DisplayPossibleSetting
     {
         /// <summary>
-        ///     Creates a new DisplaySetting
+        ///     Creates a new <see cref="DisplaySetting" /> instance.
         /// </summary>
         /// <param name="validSetting">The basic configuration information object</param>
         /// <param name="position">Display position on desktop</param>
@@ -26,7 +26,7 @@ namespace WindowsDisplayAPI
         }
 
         /// <summary>
-        ///     Creates a new DisplaySetting
+        ///     Creates a new <see cref="DisplaySetting" /> instance.
         /// </summary>
         /// <param name="validSetting">The basic configuration information object</param>
         /// <param name="position">Display position on desktop</param>
@@ -42,12 +42,13 @@ namespace WindowsDisplayAPI
             DisplayFixedOutput outputScalingMode)
             : this(
                 validSetting.Resolution, position, validSetting.ColorDepth, validSetting.Frequency,
-                validSetting.IsInterlaced, orientation, outputScalingMode)
+                validSetting.IsInterlaced, orientation, outputScalingMode
+            )
         {
         }
 
         /// <summary>
-        ///     Creates a new DisplaySetting
+        ///     Creates a new <see cref="DisplaySetting" /> instance.
         /// </summary>
         /// <param name="resolution">Display resolution</param>
         /// <param name="position">Display position on desktop</param>
@@ -58,7 +59,7 @@ namespace WindowsDisplayAPI
         }
 
         /// <summary>
-        ///     Creates a new DisplaySetting
+        ///     Creates a new <see cref="DisplaySetting" /> instance.
         /// </summary>
         /// <param name="resolution">Display resolution</param>
         /// <param name="frequency">Display frequency</param>
@@ -68,7 +69,7 @@ namespace WindowsDisplayAPI
         }
 
         /// <summary>
-        ///     Creates a new DisplaySetting
+        ///     Creates a new <see cref="DisplaySetting" /> instance.
         /// </summary>
         /// <param name="resolution">Display resolution</param>
         /// <param name="position">Display position on desktop</param>
@@ -95,10 +96,6 @@ namespace WindowsDisplayAPI
             OutputScalingMode = outputScalingMode;
         }
 
-        internal DisplaySetting(DisplayDevice display, bool current) : this(GetDeviceMode(display, current))
-        {
-        }
-
         internal DisplaySetting() : base(default)
         {
             IsEnable = false;
@@ -116,9 +113,8 @@ namespace WindowsDisplayAPI
             }
         }
 
-
         /// <summary>
-        ///     Gets the
+        ///     Gets a boolean value indicating if this instance is currently enable
         /// </summary>
         public bool IsEnable { get; } = true;
 
@@ -128,7 +124,7 @@ namespace WindowsDisplayAPI
         public DisplayOrientation Orientation { get; }
 
         /// <summary>
-        ///     Gets output behavior in case of presenting a low-resolution mode on a higher-resolution display.
+        ///     Gets output behavior in case of presenting a low-resolution mode on a higher-resolution display
         /// </summary>
         public DisplayFixedOutput OutputScalingMode { get; }
 
@@ -147,7 +143,8 @@ namespace WindowsDisplayAPI
                 IntPtr.Zero,
                 IntPtr.Zero,
                 ChangeDisplaySettingsFlags.Reset,
-                IntPtr.Zero);
+                IntPtr.Zero
+            );
 
             if (result != ChangeDisplaySettingsExResults.Successful)
             {
@@ -156,59 +153,103 @@ namespace WindowsDisplayAPI
         }
 
         /// <summary>
-        ///     Sets and possibility applies a list of display settings
+        ///     Returns the current display settings of a screen
         /// </summary>
-        /// <param name="newDisplaySettings">A key value dictionary of DisplayDevices and DisplaySettings</param>
-        /// <param name="applyNow">Indicating if the changes should be applied immediately, recommended value is false</param>
-        public static void SaveDisplaySettings(
-            Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
-            bool applyNow)
+        /// <param name="screenName">The name of the screen.</param>
+        /// <returns>An instance of <see cref="DisplaySetting" /></returns>
+        public static DisplaySetting GetCurrentFromScreenName(string screenName)
         {
-            SaveDisplaySettings(newDisplaySettings, applyNow, true);
+            return new DisplaySetting(GetDeviceMode(screenName, DisplaySettingsMode.CurrentSettings));
         }
 
-        private static DeviceMode GetDeviceMode(DisplayDevice display, bool current)
+        /// <summary>
+        ///     Returns the saved display settings of a screen
+        /// </summary>
+        /// <param name="screenName">The name of the screen.</param>
+        /// <returns>An instance of <see cref="DisplaySetting" /></returns>
+        public static DisplaySetting GetSavedFromScreenName(string screenName)
+        {
+            return new DisplaySetting(GetDeviceMode(screenName, DisplaySettingsMode.RegistrySettings));
+        }
+
+        /// <summary>
+        ///     Sets and possibility applies a list of display settings
+        /// </summary>
+        /// <param name="newSettingPairs">
+        ///     A key value dictionary of <see cref="DisplayDevice" /> and <see cref="DisplaySetting" />
+        ///     instances.
+        /// </param>
+        /// <param name="applyNow">Indicating if the changes should be applied immediately, recommended value is false</param>
+        public static void SaveDisplaySettings(
+            Dictionary<DisplayScreen, DisplaySetting> newSettingPairs,
+            bool applyNow)
+        {
+            SaveDisplaySettings(
+                newSettingPairs.ToDictionary(pair => pair.Key.ScreenName, pair => pair.Value),
+                applyNow,
+                true
+            );
+        }
+
+        /// <summary>
+        ///     Sets and possibility applies a list of display settings
+        /// </summary>
+        /// <param name="newSettingPairs">A key value dictionary of source ids and <see cref="DisplaySetting" /> instance</param>
+        /// <param name="applyNow">Indicating if the changes should be applied immediately, recommended value is false</param>
+        public static void SaveDisplaySettings(
+            Dictionary<int, DisplaySetting> newSettingPairs,
+            bool applyNow)
+        {
+            SaveDisplaySettings(
+                newSettingPairs.ToDictionary(pair => $"\\\\.\\DISPLAY{pair.Key:D}", pair => pair.Value),
+                applyNow,
+                true
+            );
+        }
+
+        private static DeviceMode GetDeviceMode(string screenName, DisplaySettingsMode flags)
         {
             var deviceMode = new DeviceMode(DeviceModeFields.None);
 
-            return !string.IsNullOrWhiteSpace(display.DisplayName) &&
-                   DeviceContextApi.EnumDisplaySettings(display.DisplayName,
-                       current ? DisplaySettingsMode.CurrentSettings : DisplaySettingsMode.RegistrySettings,
-                       ref deviceMode)
+            return !string.IsNullOrWhiteSpace(screenName) &&
+                   DeviceContextApi.EnumDisplaySettings(
+                       screenName,
+                       flags,
+                       ref deviceMode
+                   )
                 ? deviceMode
                 : default;
         }
 
         private static void SaveDisplaySettings(
-            Dictionary<DisplayDevice, DisplaySetting> newDisplaySettings,
+            Dictionary<string, DisplaySetting> newSettings,
             bool applyNow,
-            bool retry)
+            bool retry
+        )
         {
-            var rollBackState =
-                Display.GetDisplays()
-                    .Where(display => display.IsValid)
-                    .ToDictionary(display => (DisplayDevice) display, display => display.CurrentSetting);
+            var screens = DisplayScreen.GetScreens()
+                .Where(screen => screen.IsValid)
+                .ToList();
+
+            var rollbackSettings = screens
+                .ToDictionary(screen => screen.ScreenName, screen => screen.CurrentSetting);
 
             try
             {
-                var currentDisplaySettings = rollBackState.ToList();
-
-                foreach (var displaySetting in newDisplaySettings)
+                foreach (var newSetting in newSettings)
                 {
-                    currentDisplaySettings.Remove(
-                        currentDisplaySettings.FirstOrDefault(
-                            ex => ex.Key.DevicePath.Equals(displaySetting.Key.DevicePath)));
-                    displaySetting.Value.Save(displaySetting.Key, false);
+                    screens.Remove(
+                        screens.FirstOrDefault(
+                            screen => screen.ScreenName.Equals(newSetting.Key)
+                        )
+                    );
+                    newSetting.Value.Save(newSetting.Key, false);
                 }
 
                 // Disable missing monitors
-                foreach (
-                    var displaySetting in
-                    currentDisplaySettings.Where(pair => pair.Key is Display)
-                        .Select(pair => pair.Key as Display)
-                        .Where(display => display?.IsValid == true))
+                foreach (var screen in screens.Where(screen => screen.IsValid))
                 {
-                    displaySetting.Disable(false);
+                    screen.Disable(false);
                 }
 
                 if (applyNow)
@@ -220,7 +261,7 @@ namespace WindowsDisplayAPI
             {
                 if (retry)
                 {
-                    SaveDisplaySettings(rollBackState, false, false);
+                    SaveDisplaySettings(rollbackSettings, false, false);
                 }
 
                 throw;
@@ -230,18 +271,14 @@ namespace WindowsDisplayAPI
         /// <inheritdoc />
         public override string ToString()
         {
-            if (IsEnable)
-            {
-                return
-                    $"{Resolution} {(IsInterlaced ? "Interlaced" : "Progressive")} {Frequency}hz @ {ColorDepth} @ {Position}";
-            }
-
-            return "Disabled";
+            return IsEnable
+                ? $"{Resolution} {(IsInterlaced ? "Interlaced" : "Progressive")} {Frequency}hz @ {ColorDepth} @ {Position}"
+                : "Disabled";
         }
 
-        internal void Save(DisplayDevice display, bool reset)
+        internal void Save(string screenName, bool reset)
         {
-            var deviceMode = GetDeviceMode(display);
+            var deviceMode = GetDeviceMode(screenName);
             var flags = ChangeDisplaySettingsFlags.UpdateRegistry | ChangeDisplaySettingsFlags.Global;
             flags |= reset ? ChangeDisplaySettingsFlags.Reset : ChangeDisplaySettingsFlags.NoReset;
 
@@ -251,7 +288,7 @@ namespace WindowsDisplayAPI
             }
 
             var result = DeviceContextApi.ChangeDisplaySettingsEx(
-                display.DisplayName,
+                screenName,
                 ref deviceMode,
                 IntPtr.Zero,
                 flags,
@@ -260,11 +297,11 @@ namespace WindowsDisplayAPI
 
             if (result != ChangeDisplaySettingsExResults.Successful)
             {
-                throw new ModeChangeException($"[{result}]: Applying saved settings failed.", display, result);
+                throw new ModeChangeException($"[{result}]: Applying saved settings failed.", null, result);
             }
         }
 
-        private DeviceMode GetDeviceMode(DisplayDevice display)
+        private DeviceMode GetDeviceMode(string screenName)
         {
             DeviceMode deviceMode;
 
@@ -278,7 +315,7 @@ namespace WindowsDisplayAPI
                 }
 
                 deviceMode = new DeviceMode(
-                    display.DisplayName,
+                    screenName,
                     new PointL(Position),
                     Orientation,
                     OutputScalingMode,
@@ -292,14 +329,14 @@ namespace WindowsDisplayAPI
             else
             {
                 deviceMode = new DeviceMode(
-                    display.DisplayName,
+                    screenName,
                     DeviceModeFields.PelsWidth | DeviceModeFields.PelsHeight | DeviceModeFields.Position
                 );
             }
 
             if (string.IsNullOrWhiteSpace(deviceMode.DeviceName))
             {
-                throw new MissingDisplayException("Display device is missing or invalid.", display.DevicePath);
+                throw new MissingDisplayException("Display screen is missing or invalid.", null);
             }
 
             return deviceMode;

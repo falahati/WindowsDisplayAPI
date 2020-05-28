@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WindowsDisplayAPI.Exceptions;
 
 namespace WindowsDisplayAPI
 {
@@ -19,8 +18,8 @@ namespace WindowsDisplayAPI
                 device.DeviceName,
                 device.DeviceKey,
                 device.Adapter,
+                device.ScreenName,
                 device.DisplayName,
-                device.DisplayFullName,
                 device.IsAvailable,
                 false
             )
@@ -60,22 +59,7 @@ namespace WindowsDisplayAPI
         /// <inheritdoc />
         public override string ToString()
         {
-            return IsValid ? $"{GetType().Name}: {DisplayFullName} ({DeviceName})" : $"{GetType().Name}: Invalid";
-        }
-
-        /// <summary>
-        ///     Enables this unattached display device
-        /// </summary>
-        /// <param name="displaySetting">The display settings that should be applied while enabling the display device</param>
-        /// <param name="apply">Indicating if the changes should be applied immediately, recommended value is false</param>
-        public void Enable(DisplaySetting displaySetting, bool apply = false)
-        {
-            if (!IsValid)
-            {
-                throw new InvalidDisplayException(DevicePath);
-            }
-
-            displaySetting.Save(this, apply);
+            return IsValid ? $"{GetType().Name}: {DisplayName} ({DeviceName})" : $"{GetType().Name}: Invalid";
         }
 
         /// <summary>

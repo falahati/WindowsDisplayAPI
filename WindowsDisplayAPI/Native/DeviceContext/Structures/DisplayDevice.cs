@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace WindowsDisplayAPI.Native.DeviceContext.Structures
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct DisplayDevice
     {
         [MarshalAs(UnmanagedType.U4)] internal uint Size;

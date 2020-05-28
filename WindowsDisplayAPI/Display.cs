@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WindowsDisplayAPI.Exceptions;
+using WindowsDisplayAPI.Native;
+using WindowsDisplayAPI.Native.DeviceContext;
+using WindowsDisplayAPI.Native.DeviceContext.Structures;
 
 namespace WindowsDisplayAPI
 {
@@ -27,28 +30,20 @@ namespace WindowsDisplayAPI
         }
 
         /// <summary>
-        ///     Gets a DisplaySetting object representing the display current settings
+        ///     Gets the display capabilities.
         /// </summary>
-        public DisplaySetting CurrentSetting
-        {
-            get => new DisplaySetting(this, true);
-        }
-
-        /// <inheritdoc />
-        public override string DisplayFullName
+        public MonitorCapabilities Capabilities
         {
             get
             {
-                if (IsValid)
+                var handle = DCHandle.CreateFromDevice(ScreenName, DevicePath);
+
+                if (!IsValid || handle?.IsInvalid != false)
                 {
-                    return DisplayAdapter.GetDisplayAdapters()
-                        .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
-                        .FirstOrDefault(
-                            device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
-                        )?.DisplayFullName;
+                    throw new InvalidDisplayException(DevicePath);
                 }
 
-                return ToUnAttachedDisplay()?.DisplayFullName;
+                return new MonitorCapabilities(handle);
             }
         }
 
@@ -59,15 +54,52 @@ namespace WindowsDisplayAPI
             {
                 if (IsValid)
                 {
-                    return
-                        DisplayAdapter.GetDisplayAdapters()
-                            .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
-                            .FirstOrDefault(
-                                device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
-                            )?.DisplayName;
+                    return DisplayAdapter.GetDisplayAdapters()
+                        .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
+                        .FirstOrDefault(
+                            device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                        )?.DisplayName;
                 }
 
                 return ToUnAttachedDisplay()?.DisplayName;
+            }
+        }
+
+        /// <summary>
+        ///     Gets or sets the display gamma ramp look up table.
+        /// </summary>
+        public DisplayGammaRamp GammaRamp
+        {
+            get
+            {
+                var handle = DCHandle.CreateFromDevice(ScreenName, DevicePath);
+
+                if (!IsValid || handle?.IsInvalid != false)
+                {
+                    throw new InvalidDisplayException(DevicePath);
+                }
+
+                var gammaRamp = new GammaRamp();
+
+                return DeviceContextApi.GetDeviceGammaRamp(handle, ref gammaRamp)
+                    ? new DisplayGammaRamp(gammaRamp)
+                    : null;
+            }
+            set
+            {
+                var handle = DCHandle.CreateFromDevice(ScreenName, DevicePath);
+
+                if (!IsValid || handle?.IsInvalid != false)
+                {
+                    throw new InvalidDisplayException(DevicePath);
+                }
+
+                var gammaRamp = value.AsRamp();
+
+                if (!DeviceContextApi.SetDeviceGammaRamp(handle, ref gammaRamp))
+                {
+                    throw new ArgumentException("Invalid argument or value passed.", nameof(value));
+                }
             }
         }
 
@@ -76,17 +108,6 @@ namespace WindowsDisplayAPI
         {
             get => base.IsAvailable && IsValid;
         }
-
-        /// <summary>
-        ///     Gets a boolean value indicating if this display device is the Windows GDI primary device
-        /// </summary>
-        public bool IsGDIPrimary
-        {
-            get => CurrentSetting.IsEnable &&
-                   CurrentSetting.Position.X == Point.Empty.X &&
-                   CurrentSetting.Position.Y == Point.Empty.Y;
-        }
-
 
         /// <inheritdoc />
         public override bool IsValid
@@ -101,12 +122,23 @@ namespace WindowsDisplayAPI
             }
         }
 
-        /// <summary>
-        ///     Gets a DisplaySettings object representing this display saved settings
-        /// </summary>
-        public DisplaySetting SavedSetting
+        /// <inheritdoc />
+        public override string ScreenName
         {
-            get => new DisplaySetting(this, false);
+            get
+            {
+                if (IsValid)
+                {
+                    return
+                        DisplayAdapter.GetDisplayAdapters()
+                            .SelectMany(adapter => adapter.GetDisplayDevices(base.IsAvailable))
+                            .FirstOrDefault(
+                                device => device.DevicePath.Equals(DevicePath) && device.DeviceKey.Equals(DeviceKey)
+                            )?.ScreenName;
+                }
+
+                return ToUnAttachedDisplay()?.ScreenName;
+            }
         }
 
         /// <summary>
@@ -123,52 +155,7 @@ namespace WindowsDisplayAPI
         /// <inheritdoc />
         public override string ToString()
         {
-            return IsValid ? $"{GetType().Name}: {DisplayFullName} ({DeviceName})" : $"{GetType().Name}: Invalid";
-        }
-
-        /// <summary>
-        ///     Disables and detaches this display device
-        /// </summary>
-        /// <param name="apply">Indicating if the changes should be applied immediately, recommended value is false</param>
-        public void Disable(bool apply)
-        {
-            SetSettings(new DisplaySetting(), apply);
-        }
-
-#if !NETSTANDARD
-        /// <summary>
-        ///     Returns the corresponding Screen instance for this display device
-        /// </summary>
-        /// <returns>A Screen object</returns>
-        public System.Windows.Forms.Screen GetScreen()
-        {
-            if (!IsValid)
-                throw new InvalidDisplayException(DevicePath);
-            try
-            {
-                return System.Windows.Forms.Screen.AllScreens.FirstOrDefault(screen => screen.DeviceName.Equals(DisplayName));
-            }
-            catch
-            {
-                // ignored
-            }
-            return null;
-        }
-#endif
-
-        /// <summary>
-        ///     Changes the display device settings to a new DisplaySettings object
-        /// </summary>
-        /// <param name="displaySetting">The display settings that should be applied</param>
-        /// <param name="apply">Indicating if the changes should be applied immediately, recommended value is false</param>
-        public void SetSettings(DisplaySetting displaySetting, bool apply = false)
-        {
-            if (!IsValid)
-            {
-                throw new InvalidDisplayException(DevicePath);
-            }
-
-            displaySetting.Save(this, apply);
+            return IsValid ? $"{GetType().Name}: {DisplayName} ({DeviceName})" : $"{GetType().Name}: Invalid";
         }
 
         /// <summary>
