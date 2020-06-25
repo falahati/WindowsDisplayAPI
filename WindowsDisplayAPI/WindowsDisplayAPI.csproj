@@ -17,7 +17,15 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Title>Windows Display API Wrapper (CCD)</Title>
     <PackageId>WindowsDisplayAPI</PackageId>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <BumpLabel>dev</BumpLabel>
     <BumpLabelDigits>4</BumpLabelDigits>
