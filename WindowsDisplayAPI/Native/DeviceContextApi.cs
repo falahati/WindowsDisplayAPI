@@ -37,7 +37,7 @@ namespace WindowsDisplayAPI.Native
         internal static extern IntPtr CreateDC(string driver, string device, string port, IntPtr deviceMode);
 
         [DllImport("gdi32")]
-        internal static extern bool DeleteDC(DCHandle dcHandle);
+        internal static extern bool DeleteDC(IntPtr dcHandle);
 
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
@@ -90,7 +90,7 @@ namespace WindowsDisplayAPI.Native
         );
 
         [DllImport("user32")]
-        internal static extern bool ReleaseDC([In] IntPtr windowHandle, [In] DCHandle dcHandle);
+        internal static extern bool ReleaseDC([In] IntPtr windowHandle, [In] IntPtr dcHandle);
 
         [DllImport("gdi32")]
         internal static extern bool SetDeviceGammaRamp(DCHandle dcHandle, ref GammaRamp ramp);

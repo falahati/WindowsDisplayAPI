@@ -49,8 +49,8 @@ namespace WindowsDisplayAPI.Native.DeviceContext
         protected override bool ReleaseHandle()
         {
             return _created
-                ? DeviceContextApi.DeleteDC(this)
-                : DeviceContextApi.ReleaseDC(IntPtr.Zero, this);
+                ? DeviceContextApi.DeleteDC(this.handle)
+                : DeviceContextApi.ReleaseDC(IntPtr.Zero, this.handle);
         }
     }
 }
