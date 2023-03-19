@@ -8,7 +8,15 @@
     <Product>WindowsDisplayAPI</Product>
     <Authors>Soroush Falahati</Authors>
     <Copyright>Copyright © Soroush Falahati 2017</Copyright>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\WindowsDisplayAPI\WindowsDisplayAPI.csproj" />
   </ItemGroup>
